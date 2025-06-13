@@ -1,9 +1,22 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+// Import routers
+const authRouter = require('./auth');
+const usersRouter = require('./users');
+const categoriesRouter = require('./categories');
+const vuesRouter = require('./vues');
+
+// Mount sub-routers
+router.use('/authenticate', authRouter);
+router.use('/utilisateurs', usersRouter);
+router.use('/categories', categoriesRouter);
+router.use('/v_categories', vuesRouter.categories);
+router.use('/v_mouvements', vuesRouter.mouvements);
+
+// Home route
+router.get('/', function(req, res) {
+  res.json({ message: 'Welcome to the API' });
 });
 
 module.exports = router;
