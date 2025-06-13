@@ -9,20 +9,39 @@ const path = require('path');
  * @returns {string} Secret key for JWT signing
  */
 function getSecretKey() {
+  // Define the secretPath variable first
+  const secretPath = path.join(__dirname, 'secret.key');
+  
   try {
-    // Based on the package.json file to create a unique secret
+    // Check if we already have a secret key file
+    if (fs.existsSync(secretPath)) {
+      return fs.readFileSync(secretPath, 'utf8');
+    }
+    
+    // Generate from package.json if possible
     const packagePath = path.join(__dirname, 'package.json');
+    // console.log(`Using package.json at: ${packagePath}`);
+    
     if (fs.existsSync(packagePath)) {
       const packageJson = fs.readFileSync(packagePath, 'utf8');
       const hash = crypto.createHash('sha256').update(packageJson).digest('hex');
       
       // Create the secret file for future use
-      fs.writeFileSync(secretPath, hash);
+      try {
+        fs.writeFileSync(secretPath, hash);
+      } catch (writeError) {
+        console.warn('Could not write secret key file:', writeError.message);
+        // Continue execution even if we can't write the file
+      }
       
       return hash;
     }
     
-    return 'a1d5f121ds54ger512dsc56zf4g5h6j7k8l9m0n1o2p3q4r5s6t7u8v9w0x1y2z3'; // Fallback secret
+    // If we get here, use the fallback
+    const fallbackSecret = 'a1d5f121ds54ger512dsc56zf4g5h6j7k8l9m0n1o2p3q4r5s6t7u8v9w0x1y2z3';
+    console.warn('Warning: Using fallback JWT secret key. This is less secure.');
+    return fallbackSecret;
+    
   } catch (error) {
     console.warn('Warning: Using fallback JWT secret key. This is less secure.', error);
     return 'a1d5f121ds54ger512dsc56zf4g5h6j7k8l9m0n1o2p3q4r5s6t7u8v9w0x1y2z3'; // Fallback secret
@@ -43,11 +62,7 @@ const generateTokens = (user) => {
   const expiresAt = now + (24 * 60 * 60); // 24 hours in seconds
   
   const token = jwt.sign(
-    { 
-      userId: user.id,
-      iat: now,
-      exp: expiresAt
-    },
+    {userId: user.id},
     JWT_SECRET,
     { expiresIn: '24h' }
   );
@@ -79,8 +94,8 @@ const authenticateToken = (req, res, next) => {
       message: 'Invalid or expired token',
       error: error.message 
     });
-  }
-};
+    }
+}
 
 /**
  * Verify password against hashed version
