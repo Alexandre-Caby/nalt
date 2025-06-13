@@ -1,0 +1,3245 @@
+openapi: '3.0.0'
+info:
+  version: 1.0.0
+  title: Documentation API du projet money
+  description: Décrit la structure de l'API du projet money de l'équipe NALT
+servers:
+    - url: http://localhost:3000/api/v1/
+      description: Serveur de développement de l'API
+paths:
+  # route /generateTokenTemp
+  /generateTokenTemp:
+    # request post for the path /generateTokenTemp
+    post:
+      summary: Generate a temporary token to create a user.
+      tags:
+        - Requests for the path /generateTokenTemp
+      description: Generate a temporary token to create a user when no user is present in the database.
+      responses:
+        200:
+          description: Token generated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TokenTemp'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # route /login
+  /login:
+    # request post for the path /login
+    post:
+      summary: Login to the API.
+      tags:
+        - Requests for the path /login
+      description: Login to the API with the name and password.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                password:
+                  type: string
+                  format: password
+
+      responses:
+        200:
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # route /utilisateurs
+  /utilisateurs:
+    # request get for the path /utilisateurs
+    get:
+      summary: Récupère la liste de tous les utilisateurs
+      security:
+        - bearerAuth: []
+      tags:
+        - Requetes pour la route /utilisateurs
+      description: Retourne la liste des utilisateurs avec l'id, le nom, le prenom, le login, la ville, le code postal et la date de création
+      responses:
+        200:
+          description: Liste des utilisateurs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /utilisateurs
+    post:
+      summary: Créer un nouvel utilisateur.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requetes pour la route /utilisateurs
+      description: Créé un nouvel utilisateur avec le nom, le prenom, le mot de passe, la ville, le code postal et la date de création.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                  
+      responses:
+        201:
+          description: Utilisateur créé
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /utilisateurs/{idUtilisateur}:
+    # request get fot the path /utilisateurs/{idUtilisateur}
+    get:
+      summary: Récupère un utilisateur par son id.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requetes pour la route /utilisateurs
+      description: Récupère un utilisateur avec l'id, le nom, le prenom, le login, la ville et le code postal et la date de création.
+      parameters: # parameters for the query
+        - name: id
+          description: Id de l'utilisateur.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Utilsateur trouvé.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request put for the path /utilisateurs/{idUtilisateur}
+    put:
+      summary: Met à jour les informations d'un utilisateur.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requetes pour la route /utilisateurs
+      description: Met à jour plusieurs informations d'un utilisateur comme le nom, le prenom, le mot de passe, le login, la ville et le code postal.
+      parameters: # parameters for the query
+        - name: id
+          description: Id de l'utilisateur
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      requestBody: # specification of the request body
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                password:
+                  type: string
+                  allowEmptyValue: true
+                  format: password
+
+      responses:
+        200:
+          description: Utilisateur mis à jour
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /utilisateurs/{idUtilisateur}
+    delete:
+      summary: Supprime un utilisateur par son id
+      security:
+        - bearerAuth: []
+      tags:
+        - Requetes pour la route /utilisateurs
+      description: Supprime un utilisateur de la base de donnée grâce à son id
+      parameters: # parameters for the query
+        - name: id
+          description: Id de l'utilisateur
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Utilisateur supprimé
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # subroute /utilisateurs/{idUtilisateur}/comptes
+  /utilisateurs/{idUtilisateur}/comptes:
+    # request get for the path /utilisateurs/{idUtilisateur}/comptes
+    get:
+      summary: Récupère la liste des comptes d'un utilisateur
+      security:
+        - bearerAuth: []
+      tags:
+        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/comptes
+      description: Récupère tous les comptes liées à cet utilisateur
+      responses:
+        200:
+          description: List of committees.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Committee'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /utilisateurs/{id}/comptes
+    post:
+      summary: Create a new committee.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /users
+      description: Create a new committee with the id, name and createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        201:
+          description: Committee created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Committee'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /utilisateurs/{id}/comptes/{id}:
+    # request get for the path /utilisateurs/{id}/comptes/{id}
+     get:
+      summary: Returns a list of committees.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /users
+      description: Returns a list of committees with the id and name.
+      responses:
+        200:
+          description: List of committees.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Committee'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request put for the path /utilisateurs/{id}/comptes{id}
+      put:
+      summary: Update a committee.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /users
+      description: Update a committee with the id, name and updatedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the committee.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        200:
+          description: Committee updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Committee'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /committees/{id}/users:
+    # request get for the path /users/committees/{id}/users
+    get:
+      summary: Returns a list of users who are part of a committee.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /users
+      description: Returns a list of users with the id, name, password, firstName, lastName and createdAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the committee.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: List of users in a committee.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Committee'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /users/committees/{id}/users
+    post:
+      summary: Add a user to a committee.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /users
+      description: Add a user to a committee with the id of the committee and the id of the user.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the committee.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+      responses:
+        201:
+          description: User added to committee.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Committee'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /committees/{id}/users/{userId}:
+    # request delete for the path /users/committees/{id}/users/{userId}
+    delete:
+      summary: Remove a user from a committee.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /users
+      description: Remove a user from a committee with the id of the committee and the id of the user.
+      parameters: # parameters for the query  
+        - name: id
+          description: Id of the committee.
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          description: Id of the user.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: User removed from committee.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Committee'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  ###################################################################################
+  # route categories
+  /categories:
+    # request get for the path /categories
+    get:
+      summary: Returns a list of categories.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /categories
+      description: Returns a list of categorie with the idCategorie, nomCategorie, dateHeureCreation and dateHeureMAJ.
+      responses:
+        200:
+          description: An array of categorie.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    # request post for the path /categories
+    post:
+      summary: Create a new categories.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /categories
+      description: Create a new categorie with the idCategorie, nomCategorie, dateHeureCreation and dateHeureMAJ.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nomCategorie:
+                  type: string
+                dateHeureCreation:
+                  type: date
+                dateHeureMAJ: 
+                  type: date
+      responses:
+        201:
+          description: Categories created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /categories/{idCategorie}:
+    # request get for the path /categories/{idCategorie}
+    get:
+      summary: Returns a categorie by its id.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /categories
+      description: Returns a categories with the idCategorie, name, nomCategorie, dateHeureCreation and dateHeureMAJ.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the categorie.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Categorie found.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError' 
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request put for the path /categories/{id}
+    put:
+      summary: Update a categorie.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /categories
+      description: Update a categorie with the id, name, nomCategorie, dateHeureCreation and dateHeureMAJ.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the categorie.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nomCategorie:
+                  type: string
+                dateHeureCreation:
+                  type: date
+                dateHeureMAJ: 
+                  type: date
+      responses:
+        200:
+          description: Categorie updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /categories/{id}
+    delete:
+      summary: Delete a categorie.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /categories
+      description: Delete a categorie with the id.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the categorie.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Categorie deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  # subroute /classes
+  /cate:
+    # request get for the path /classes
+    get:
+      summary: Returns a list of classes and the list of clients.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /clients
+      description: Returns a list of classes with the id, name, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of classes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Class'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /classes
+    post:
+      summary: Create a new class.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /clients
+      description: Create a new class with the id, name and createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+
+      responses:
+        201:
+          description: Class created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Class'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /classes/{id}:
+      # request put for the path /classes/{id}
+    put:
+      summary: Update a class.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /clients
+      description: Update a class with the id, name and updatedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the class.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        200:
+          description: Class updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Class'
+        '400':
+          $ref: '#/components/responses/BadRequestError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          $ref: '#/components/responses/ForbiddenError' 
+        '404':
+          $ref: '#/components/responses/NotFoundError' 
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /classes/{id}
+    delete:
+      summary: Delete a class.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /clients
+      description: Delete a class with the id and create the field deletedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the class.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Class deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          $ref: '#/components/responses/ForbiddenError' 
+        '404':
+          $ref: '#/components/responses/NotFoundError' 
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /classes/{id}/clients:
+    # request get for the path /classes/{id}/clients
+    get:
+      summary: Returns a class by its id with the list of clients.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /clients
+      description: Returns a class with the id, name, createdAt and updatedAt and the list of clients.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the class.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Class found.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Class'
+        '400':
+          $ref: '#/components/responses/BadRequestError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          $ref: '#/components/responses/ForbiddenError' 
+        '404':
+          $ref: '#/components/responses/NotFoundError' 
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /classes/{id}/clients
+    post:
+      summary: Add a client to a class.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /clients
+      description: Add a client to a class with the id of the class and the id of the client.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the class.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientId:
+                  type: integer
+      responses:
+        201:
+          description: Client added to class.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Class'
+        '400':
+          $ref: '#/components/responses/BadRequestError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          $ref: '#/components/responses/ForbiddenError' 
+        '404':
+          $ref: '#/components/responses/NotFoundError' 
+        '409':
+          $ref: '#/components/responses/ConflictError' 
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /classes/{id}/clients/{clientId}:
+    # request delete for the path /classes/{id}/clients/{clientId}
+    delete:
+      summary: Remove a client from a class.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /clients
+      description: Remove a client from a class with the id of the class and the id of the client.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the class.
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: clientId
+          description: Id of the client.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Client removed from class.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Class'
+        '400':
+          $ref: '#/components/responses/BadRequestError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          $ref: '#/components/responses/ForbiddenError' 
+        '404':
+          $ref: '#/components/responses/NotFoundError' 
+        '409':
+          $ref: '#/components/responses/ConflictError' 
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+
+  # route /cards
+  /cards:
+    # request get for the path /cards
+    get:
+      summary: Returns a list of cards
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /cards
+      description: Returns a list of cards with the id, uid, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of cards.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /cards
+    post:
+      summary: Create a new card.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /cards
+      description: Create a new card with the id,uid and createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  type: string
+
+      responses:
+        201:
+          description: Card created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /cards/{id}:
+    # request get for the path /cards/{id}
+    get:
+      summary: Returns a card by its id.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /cards
+      description: Returns a card with the id, uid, createdAt and updatedAt and the user and client linked to the card.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the card.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Card found.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+        '400':
+          $ref: '#/components/responses/BadRequestError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          $ref: '#/components/responses/ForbiddenError' 
+        '404':
+          $ref: '#/components/responses/NotFoundError' 
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /cards/{id}
+    delete:
+      summary: Delete a card and the associated user and client.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /cards
+      description: Delete a card with the id and create the field deletedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the card.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Card deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CardDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /cards/{id}/users:
+    # request post for the path /cards/{id}/users
+    post:
+      summary: Link a user to a card.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /cards
+      description: Link a user to a card with the id of the card and the id of the user.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the card.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+      responses:
+        201:
+          description: User linked to card.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+        '400':
+          $ref: '#/components/responses/BadRequestError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          $ref: '#/components/responses/ForbiddenError' 
+        '404':
+          $ref: '#/components/responses/NotFoundError' 
+        '409':
+          $ref: '#/components/responses/ConflictError' 
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  /cards/{id}/clients:
+    # request post for the path /cards/{id}/clients
+    post:
+      summary: Link a client to a card.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /cards
+      description: Link a client to a card with the id of the card and the id of the client.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the card.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientId:
+                  type: integer
+      responses:
+        201:
+          description: Client linked to card.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+        '400':
+          $ref: '#/components/responses/BadRequestError' 
+        '401':
+          $ref: '#/components/responses/UnauthorizedError' 
+        '403':
+          $ref: '#/components/responses/ForbiddenError' 
+        '404':
+          $ref: '#/components/responses/NotFoundError' 
+        '409':
+          $ref: '#/components/responses/ConflictError' 
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  # route /products
+  /products:
+    # request get for the path /products
+    get:
+      summary: Returns a list of products.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /products
+      description: Returns a list of products with the id, name, price, ui_color, ui_name, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of products.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /products
+    post:
+      summary: Create a new product.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /products
+      description: Create a new product with the id, name, price, ui_color, ui_name and createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                price:
+                  type: integer
+                ui_color:
+                  type: string
+                ui_name:
+                  type: string
+                categoryName:
+                  type: string
+
+      responses:
+        201:
+          description: Product created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /products/{id}:
+    # request put for the path /products/{id}
+    put:
+      summary: Update a product.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /products
+      description: Update a product with the id, name, price, ui_color, ui_name and updatedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the product.
+          in: path
+          required: true
+          schema:
+            type: integer
+      
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                price:
+                  type: integer
+                ui_color:
+                  type: string
+                ui_name:
+                  type: string
+                categoryName:
+                  type: string
+      responses:
+        200:
+          description: Product updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    # request delete for the path /products/{id}
+    delete:
+      summary: Delete a product.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /products
+      description: Delete a product with the id and create the field deletedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the product.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Product deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # subroute /productsCategories for the path /products
+  /products/productsCategories:
+    # request get for the path /products/productsCategories
+    get:
+      summary: Returns a list of categories.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /products
+      description: Returns a list of categories with the id, name, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of categories.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductsCategories'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /products/productsCategories
+    post:
+      summary: Create a new category.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /products
+      description: Create a new category with the id, name, createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+
+      responses:
+        201:
+          description: ProductsCategories created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductsCategories'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /products/productsCategories/{id}:
+    # request put for the path /products/productsCategories/{id}
+    put:
+      summary: Update a category.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /products
+      description: Update a category with the id, name, updatedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the product category.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      requestBody: # specificatio        // Vérifiez si le produit existe déjàn of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+
+      responses:
+        200:
+          description: ProductsCategories updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductsCategories'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /products/productsCategories/{id}
+    delete:
+      summary: Delete a category.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /products
+      description: Delete a category with the id and create the field deletedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the product category.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: ProductsCategories deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductsCategoriesDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+  # route /transactions
+  /transactions:
+    # request get for the path /transactions
+    get:
+      summary: Returns a list of transactions.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Returns a list of transactions with the id, amount, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of transactions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /transactions
+    post:
+      summary: Create a new transaction and update stock in PHP API.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Create a new transaction with the id, amount and createdAt. When cart items are included, stock is automatically updated in the PHP API.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: 
+                - amount
+                - typeName
+                - meanOfPaymentName
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  description: The amount of the transaction.
+                typeName:
+                  type: string
+                  description: The name of the transaction type.
+                meanOfPaymentName:
+                  type: string
+                  description: The name of the means of payment.
+                clientId:  # Optional
+                  type: integer
+                  description: The ID of the client.
+                committeeId:  # Optional
+                  type: integer
+                  description: The ID of the committee.
+                userId:  # Optional
+                  type: integer
+                  description: The ID of the user.
+                cart:  # Added cart parameter
+                  type: array
+                  description: Array of products being purchased
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                        description: ID of the product in the local database
+                      quantity:
+                        type: integer
+                        description: Quantity being purchased
+                      price:
+                        type: number
+                        format: float
+                        description: Optional price override for this item
+
+      responses:
+        201:
+          description: Transaction created with stock updates.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  transaction:
+                    $ref: '#/components/schemas/Transaction'
+                  payment:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      amount:
+                        type: number
+                      uid:
+                        type: string
+                  stockUpdates:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productId:
+                          type: integer
+                        php_api_id:
+                          type: integer
+                        success:
+                          type: boolean
+                        saleId:
+                          type: integer
+                        stockBefore:
+                          type: integer
+                        stockAfter:
+                          type: integer
+                        error:
+                          type: string
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  # subroute /types for the path /transactions
+  /transactions/types:
+    # request get for the path /transactions/types
+    get:
+      summary: Returns a list of types for transactions.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Returns a list of types with the id, name, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of types.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Type'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /transactions/types
+    post:
+      summary: Create a new type of transaction.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Create a new type with the id, name and createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+
+      responses:
+        201:
+          description: Type created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Type'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /transactions/types/{id}:
+    # request delete for the path /transactions/types{id}
+    delete:
+      summary: Delete a type of transaction.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Delete a type with the id and create the field deletedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the type.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Type deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TypeDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # subroute /meansOfPayment for the path /transactions
+  /transactions/meansOfPayment:
+    # request get for the path /transactions/meansOfPayment
+    get:
+      summary: Returns a list of means of payment.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Returns a list of means of payment with the id, name,api_name, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of means of payment.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeanOfPayment'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /transactions/meansOfPayment
+    post:
+      summary: Create a new mean of payment.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Create a new mean of payment with the id, name, api_name, createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                api_name:
+                  type: string
+
+      responses:
+        201:
+          description: Mean of payment created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeanOfPayment'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /transactions/meansOfPayment/{id}: 
+    # request put for the path /transactions/meansOfPayment/{id}
+    put:
+      summary: Update a mean of payment.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Update a mean of payment with the id, name, api_name, updatedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the mean of payment.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                api_name:
+                  type: string
+
+      responses:
+        200:
+          description: Mean of payment updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeanOfPayment'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /transactions/meansOfPayment/{id}
+    delete:
+      summary: Delete a mean of payment.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Delete a mean of payment with the id and create the field deletedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the mean of payment.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Mean of payment deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeanOfPaymentDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  # subroute /refunds for the path /transactions
+  /transactions/refunds:
+    # request get for the path /transactions/refunds
+    get:
+      summary: Returns a list of refunds.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Returns a list of refunds with the id, reason, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of refunds.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Refund'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /transactions/refunds
+    post:
+      summary: Create a new refund.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Create a new refund with the id, reason, createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                transactionId:
+                  type: integer
+                userId:
+                  type: integer
+
+      responses:
+        201:
+          description: Refund created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Refund'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /transactions/refunds/{id}:
+    # request put for the path /transactions/refunds/{id}
+    put:
+      summary: Update a refund.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /transactions
+      description: Update a refund with the id, reason, updatedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the refund.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+
+      responses:
+        200:
+          description: Refund updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Refund'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # # request delete for the path /transactions/refunds/{id}
+    # delete:
+    #   summary: Delete a refund.
+    #   security:
+    #     - bearerAuth: []
+    #   tags:
+    #     - Requests for the path /transactions
+    #   description: Delete a refund with the id and create the field deletedAt.
+    #   parameters: # parameters for the query
+    #     - name: id
+    #       description: Id of the refund.
+    #       in: path
+    #       required: true
+    #       schema:
+    #         type: integer
+
+    #   responses:
+    #     200:
+    #       description: Refund deleted.
+    #       content:
+    #         application/json:
+    #           schema:
+    #             type: array
+    #             items:
+    #               $ref: '#/components/schemas/RefundDeleted'
+    #     '400':
+    #       $ref: '#/components/responses/BadRequestError'
+    #     '401':
+    #       $ref: '#/components/responses/UnauthorizedError'
+    #     '403':
+    #       $ref: '#/components/responses/ForbiddenError'
+    #     '404':
+    #       $ref: '#/components/responses/NotFoundError'
+    #     '500':
+    #       $ref: '#/components/responses/InternalServerError'
+  
+  # route /meals
+  /meals:
+    # request get for the path /meals
+    get:
+      summary: Returns a list of meals.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Returns a list of meals with the id, name, price, ui_color, ui_name, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of meals.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /meals
+    post:
+      summary: Create a new meal.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Create a new meal with the id, name, price, ui_color, ui_name, createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                price:
+                  type: number
+                ui_color:
+                  type: string
+                ui_name:
+                  type: string
+                categoryName:
+                  type: string
+      responses:
+        201:
+          description: Meal created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /meals/{id}:
+    # request put for the path /meals/{id}
+    put:
+      summary: Update a meal.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Update a meal with the id, name, price, ui_color, ui_name, createdAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the meal.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                price:
+                  type: number
+                ui_color:
+                  type: string
+                ui_name:
+                  type: string
+      responses:
+        200:
+          description: Meal updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /meals/{id}
+    delete:
+      summary: Delete a meal.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Delete a meal with the id and create the field deletedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the meal.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Meal deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MealDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # subroute /mealProductCategories for the path /meals
+  /meals/mealProductCategories:
+    # request get for the path /meals/mealProductCategories
+    get:
+      summary: Returns a list of product categories.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Returns a list of product categories with the id, name, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of product categories.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MealProductCategories'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /meals/mealProductCategories
+    post:
+      summary: Create a new product category.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Create a new product category with the id, name and createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+
+      responses:
+        201:
+          description: Product category created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MealProductCategories'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /meals/mealProductCategories/{id}:
+    # request put for the path /meals/mealProductCategories/{id}
+    put:
+      summary: Update a product category.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Update a product category with the id, name, updatedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the product category.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+
+      responses:
+        200:
+          description: Product category updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MealProductCategories'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /meals/mealProductCategories
+    delete:
+      summary: Delete a product category.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Delete a product category with the id and create the field deletedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the product category.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Product category deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MealProductCategoriesDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+  # subroute /orders for the path /meals
+  /meals/orders:
+    # request get for the path /meals/orders
+    get:
+      summary: Returns a list of orders.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Returns a list of orders with the id and the note, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of orders.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /meals/orders
+    post:
+      summary: Create a new order.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Create a new order with the id, note, createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+
+      responses:
+        201:
+          description: Order created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /meals/orders/{id}:
+    # request put for the path /meals/orders/{id}
+    put:
+      summary: Update an order.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Update an order with the id, note, updatedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the order.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+
+      responses:
+        200:
+          description: Order updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /meals/orders
+    delete:
+      summary: Delete an order.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Delete an order with the id and create the field deletedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the order.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Order deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  # subroute /status for the path /orders
+  /meals/orders/status:
+    # request get for the path /meals/orders/status
+    get:
+      summary: Returns a list of status.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Returns a list of status with the id, name, createdAt and updatedAt.
+      responses:
+        200:
+          description: An array of status.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Status'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request post for the path /meals/orders/status
+    post:
+      summary: Create a new status.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Create a new status with the id, name, createdAt.
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        201:
+          description: Status created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Status'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /meals/orders/status/{id}:
+    # request put for the path /meals/orders/status/{id}
+    put:
+      summary: Update a status.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Update a status with the id, name, updatedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the status.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+
+      responses:
+        200:
+          description: Status updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Status'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /meals/orders/status/{id}
+    delete:
+      summary: Delete a status.
+      security:
+        - bearerAuth: []
+      tags:
+        - Requests for the path /meals
+      description: Delete a status with the id and create the field deletedAt.
+      parameters: # parameters for the query
+        - name: id
+          description: Id of the status.
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Status deleted.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StatusDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # components
+components:
+  # schemas definitions
+  schemas:    
+    # schema for the path/generateTokenTemp
+    TokenTemp:
+      type: object
+      properties:
+        token:
+          type: string
+
+    # schema for the path/users
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        card:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+    
+    # schema for the path/users/committees
+    Committee:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # schema for the path/clients
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        firstName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        balance:
+          type: number
+          format: double
+        card:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+    
+    # schema for the path/clients/classes
+    Class:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        client:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+    
+    # schema for the path/cards
+    Card:
+      type: object
+      properties:
+        id:
+          type: integer
+        uid:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        user:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        client:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+        
+    
+    # schema for the path/products
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: double
+        ui_color:
+          type: string
+        ui_name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:  
+          type: string
+          format: date-time
+        productCategory:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductsCategories'
+
+    # schema for the path/products/categories
+    ProductsCategories:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # schema for the path/transactions
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: number
+          format: double
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        type:
+          type: array
+          items:
+            $ref: '#/components/schemas/Type'
+        meanOfPayment:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeanOfPayment'
+        refund:
+          type: array
+          items:
+            $ref: '#/components/schemas/Refund'
+        
+
+    # schema for the path /transactions/meansOfPayment
+    MeanOfPayment:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        api_name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # schema for the path /transactions/refunds
+    Refund:
+      type: object
+      properties:
+        id:
+          type: integer
+        reason:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # schema for the path /transactions/types
+    Type:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # schema for the path /meals
+    Meal:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: double
+        ui_color:
+          type: string
+        ui_name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        productCategory:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductsCategories'
+
+    # schema for the path /meals/mealProductCategories
+    MealProductCategories:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # schema for the path /meals/orders
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        note:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # schema for the path /meals/orders/status
+    Status:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # schema for the delete path/users
+    UserDeleted:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+      
+    # schema for the delete path/client
+    ClientDeleted:
+      allOf:
+        - $ref: '#/components/schemas/Client'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+  
+    # schema for the delete path/cards
+    CardDeleted:
+      allOf:
+        - $ref: '#/components/schemas/Card'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+
+    # schema for the delete path/transations/types
+    TypeDeleted:
+      allOf:
+        - $ref: '#/components/schemas/Type'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+
+    # schema for the delete path/products
+    ProductDeleted:
+      allOf:
+        - $ref: '#/components/schemas/Product'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time   
+
+    # schema for the delete path /products/categories
+    ProductsCategoriesDeleted:
+      allOf:
+        - $ref: '#/components/schemas/ProductsCategories'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+
+    # schema for the delete path/transations
+    TransactionDeleted:
+      allOf:
+        - $ref: '#/components/schemas/Transaction'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+
+    # schema for the delete path/transactions/meansOfPayment
+    MeanOfPaymentDeleted:
+      allOf:
+        - $ref: '#/components/schemas/MeanOfPayment'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+
+    # schema for the delete path/transactions/refunds
+    RefundDeleted:
+      allOf:
+        - $ref: '#/components/schemas/Refund'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+
+    # schema for the delete path/meals
+    MealDeleted:
+      allOf:
+        - $ref: '#/components/schemas/Meal'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+
+    # schema for the delete path/meals/mealProductCategories
+    MealProductCategoriesDeleted:
+      allOf:
+        - $ref: '#/components/schemas/MealProductCategories'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+
+    # schema for the delete path/meals/orders
+    OrderDeleted:
+      allOf:
+        - $ref: '#/components/schemas/Order'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+
+    # schema for the delete path/meals/orders/status
+    StatusDeleted:
+      allOf:
+        - $ref: '#/components/schemas/Status'
+        - type: object
+          properties:
+            deletedAt:
+              type: string
+              format: date-time
+    # schema for the errors responses
+    Error:
+      description: Error response
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            fields:
+              type: string
+            details:
+              type: string
+
+  # responses
+  responses:
+    # 400 Bad Request
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    # 401 Unauthorized
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    # 403 Forbidden
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    # 404 Not Found
+    NotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'  
+    # 409 Conflict
+    ConflictError:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    # 500 Internal Server Error
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  # securitySchemes
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+# security
+security:
+  - bearerAuth: []
