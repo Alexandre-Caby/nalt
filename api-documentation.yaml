@@ -288,7 +288,7 @@ paths:
       description: Récupère tous les comptes liées à cet utilisateur
       responses:
         200:
-          description: List of committees.
+          description: Récupère la liste des comptes d'un utilisateur
           content:
             application/json:
               schema:
@@ -306,9 +306,9 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-    # request post for the path /utilisateurs/{id}/comptes
+    # request post for the path /utilisateurs/{idUtilisateur}/comptes
     post:
-      summary: Create a new committee.
+      summary: Créé un nouveau compte pour un utilisateur.
       security:
         - bearerAuth: []
       tags:
@@ -621,7 +621,7 @@ paths:
   /categories/{idCategorie}:
     # request get for the path /categories/{idCategorie}
     get:
-      summary: Returns a categorie by its id.
+      summary: Returns a categorie by idCategorie.
       security:
         - bearerAuth: []
       tags:
@@ -661,7 +661,7 @@ paths:
         - bearerAuth: []
       tags:
         - Requests for the path /categories
-      description: Update a categorie with the id, name, nomCategorie, dateHeureCreation and dateHeureMAJ.
+      description: Update a categorie with the idCategorie, name, nomCategorie, dateHeureCreation and dateHeureMAJ.
       parameters: # parameters for the query
         - name: id
           description: Id of the categorie.
@@ -709,7 +709,7 @@ paths:
         - bearerAuth: []
       tags:
         - Requests for the path /categories
-      description: Delete a categorie with the id.
+      description: Delete a categorie with the idCategorie.
       parameters: # parameters for the query
         - name: id
           description: Id of the categorie.
@@ -738,19 +738,19 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
   
-  # subroute /classes
-  /cate:
-    # request get for the path /classes
+  # subroute /categories/{idCategorie}/sous-categories
+  /categories/{idCategorie}/sous-categories:
+    # request get for the path /categories/{idCategorie}/sous-categories
     get:
-      summary: Returns a list of classes and the list of clients.
+      summary: Returns a list of sous-categorie.
       security:
         - bearerAuth: []
       tags:
-        - Requests for the path /clients
-      description: Returns a list of classes with the id, name, createdAt and updatedAt.
+        - Requests for the path /sous-categories
+      description: Returns a list of sous-categorie with the idSouscategorie, name, createdAt and updatedAt.
       responses:
         200:
-          description: An array of classes.
+          description: An array of sous-categorie.
           content:
             application/json:
               schema:
