@@ -167,16 +167,14 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
 
       responses:
-        200:
-          description: Utilsateur trouvé.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -205,30 +203,11 @@ paths:
             type: integer
 
       requestBody: # specification of the request body
-        required: false
+        required: true
         content:
           application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                password:
-                  type: string
-                  allowEmptyValue: true
-                  format: password
-
+              $ref: '#/components/schemas/Card'
       responses:
-        200:
-          description: Utilisateur mis à jour
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -255,16 +234,13 @@ paths:
           required: true
           schema:
             type: integer
-
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
       responses:
-        200:
-          description: Utilisateur supprimé
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -286,15 +262,13 @@ paths:
       tags:
         - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/comptes
       description: Récupère tous les comptes liées à cet utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
       responses:
-        200:
-          description: Récupère la liste des comptes d'un utilisateur
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Committee'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -345,24 +319,20 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /utilisateurs/{idUtilisateur}/comptes/{id}:
+  /utilisateurs/{idUtilisateur}/comptes/{idCompte}:
     # request get for the path /utilisateurs/{idUtilisateur}/comptes/{idComptes}
-     get:
-      summary: Returns a list of committees.
-      security:
+  get:
+    summary: Returns a compte.
+    security:
         - bearerAuth: []
-      tags:
-        - Requests for the path /users
-      description: Returns a list of committees with the idUtilisateur and name.
-      responses:
-        200:
-          description: List of committees.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Committee'
+    description: Returns a list of committees with the idCompte, descriptionCompte, idUtilisateur, dateHeureCreation, dateHeureMAJ, soldeInitial, dernierSolde and name.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Card'
+    responses:
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -375,7 +345,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
     # request put for the path /utilisateurs/{idUtilisateur}/comptes/{idComptes}
-      put:
+    put:
       summary: Update a committee.
       security:
         - bearerAuth: []
@@ -389,24 +359,13 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody: # specification of the request body
+      requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
+              $ref: '#/components/schemas/Card'
       responses:
-        200:
-          description: Committee updated.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Committee'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -418,172 +377,243 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /committees/{id}/users:
-    # request get for the path /users/committees/{id}/users
+  # Routes Tiers
+  /utilisateurs/{idUtilisateur}/tiers:
     get:
-      summary: Returns a list of users who are part of a committee.
+      summary: Récupère la liste des tiers.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Requests for the path /users
-      description: Returns a list of users with the id, name, password, firstName, lastName and createdAt.
-      parameters: # parameters for the query
-        - name: id
-          description: Id of the committee.
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        200:
-          description: List of users in a committee.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Committee'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    # request post for the path /users/committees/{id}/users
-    post:
-      summary: Add a user to a committee.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requests for the path /users
-      description: Add a user to a committee with the id of the committee and the id of the user.
-      parameters: # parameters for the query
-        - name: id
-          description: Id of the committee.
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody: # specification of the request body
+        - Requêtes pour /utilisateurs/{idUtilisateur}/tiers
+      description: Retourne la liste des tiers associés à l'utilisateur avec idUtilisateur.
+      requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                userId:
-                  type: integer
+              $ref: '#/components/schemas/Card'
+      responses:
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Crée un nouveau tiers.
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Requêtes pour /utilisateurs/{idUtilisateur}/tiers
+      description: Crée un tiers pour un utilisateur donné.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+      responses:
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /utilisateurs/{idUtilisateur}/tiers/{idTiers}:
+    get:
+      summary: Récupère un tiers par ID.
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Requêtes pour /utilisateurs/{idUtilisateur}/tiers/{idTiers}
+      description: Récupère les informations du tiers correspondant à idTiers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+      responses:
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      summary: Met à jour partiellement un tiers.
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Requêtes pour /utilisateurs/{idUtilisateur}/tiers/{idTiers}
+      description: Met à jour partiellement les informations d’un tiers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+      responses:
+        200:
+          description: Tiers mis à jour.
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: Met à jour un tiers.
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Requêtes pour /utilisateurs/{idUtilisateur}/tiers/{idTiers}
+      description: Met à jour les informations d’un tiers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+      responses:
+        200:
+          description: Tiers mis à jour.
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Supprime un tiers.
+      security:
+        - bearerAuth: [ ]
+      description: Supprime le tiers avec l'ID donné.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+      responses:
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  # Routes Mouvements
+  /utilisateurs/{idUtilisateur}/mouvements:
+    get:
+      summary: Récupère la liste des mouvements.
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Requêtes pour /utilisateurs/{idUtilisateur}/mouvements
+      description: Retourne la liste des mouvements d’un utilisateur.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+      responses:
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Crée un mouvement.
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Requêtes pour /utilisateurs/{idUtilisateur}/mouvements
+      description: Crée un nouveau mouvement pour un utilisateur.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
       responses:
         201:
-          description: User added to committee.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Committee'
-        '400':
+          description: Mouvement créé.
+        400:
           $ref: '#/components/responses/BadRequestError'
-        '401':
+        401:
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
+        403:
           $ref: '#/components/responses/ForbiddenError'
-        '404':
+        404:
           $ref: '#/components/responses/NotFoundError'
-        '409':
-          $ref: '#/components/responses/ConflictError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /committees/{id}/users/{userId}:
-    # request delete for the path /users/committees/{id}/users/{userId}
-    delete:
-      summary: Remove a user from a committee.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requests for the path /users
-      description: Remove a user from a committee with the id of the committee and the id of the user.
-      parameters: # parameters for the query  
-        - name: id
-          description: Id of the committee.
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: userId
-          description: Id of the user.
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        200:
-          description: User removed from committee.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Committee'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '409':
-          $ref: '#/components/responses/ConflictError'
-        '500':
+        500:
           $ref: '#/components/responses/InternalServerError'
 
   ###################################################################################
-  # route categories
+  # routes pour les catégories
   /categories:
-    # request get for the path /categories
     get:
-      summary: Returns a list of categories.
+      summary: Retourne une liste de catégories.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Requests for the path /categories
-      description: Returns a list of categorie with the idCategorie, nomCategorie, dateHeureCreation and dateHeureMAJ.
+        - Requêtes pour le chemin /categories
+      description: Retourne une liste de catégories avec les champs idCategorie, nomCategorie, dateHeureCreation et dateHeureMAJ.
       responses:
         200:
-          description: An array of categorie.
+          description: Un tableau de catégories.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Client'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-    
-    # request post for the path /categories
+                  $ref: '#/components/schemas/Card'
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
     post:
-      summary: Create a new categories.
+      summary: Crée une nouvelle catégorie.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Requests for the path /categories
-      description: Create a new categorie with the idCategorie, nomCategorie, dateHeureCreation and dateHeureMAJ.
-      requestBody: # specification of the request body
+        - Requêtes pour le chemin /categories
+      description: Crée une nouvelle catégorie avec les champs nomCategorie, dateHeureCreation et dateHeureMAJ.
+      requestBody:
         required: true
         content:
           application/json:
@@ -594,82 +624,65 @@ paths:
                   type: string
                 dateHeureCreation:
                   type: string
-                dateHeureMAJ: 
+                dateHeureMAJ:
                   type: string
       responses:
         201:
-          description: Categories created.
+          description: Catégorie créée.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Client'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '409':
-          $ref: '#/components/responses/ConflictError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: '#/components/schemas/Card'
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '409': { $ref: '#/components/responses/ConflictError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
 
   /categories/{idCategorie}:
-    # request get for the path /categories/{idCategorie}
     get:
-      summary: Returns a categorie by idCategorie.
+      summary: Retourne une catégorie par son identifiant.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Requests for the path /categories
-      description: Returns a categories with the idCategorie, name, nomCategorie, dateHeureCreation and dateHeureMAJ.
-      parameters: # parameters for the query
-        - name: id
-          description: Id of the categorie.
+        - Requêtes pour le chemin /categories
+      description: Retourne une catégorie avec les champs idCategorie, nomCategorie, dateHeureCreation et dateHeureMAJ.
+      parameters:
+        - name: idCategorie
+          description: Identifiant de la catégorie.
           in: path
           required: true
           schema:
             type: integer
       responses:
         200:
-          description: Categorie found.
+          description: Catégorie trouvée.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Client'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError' 
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError' 
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: '#/components/schemas/Card'
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
 
-    # request put for the path /categories/{idCategorie}
     put:
-      summary: Update a categorie.
+      summary: Met à jour une catégorie.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Requests for the path /categories
-      description: Update a categorie with the idCategorie, name, nomCategorie, dateHeureCreation and dateHeureMAJ.
-      parameters: # parameters for the query
-        - name: id
-          description: Id of the categorie.
+        - Requêtes pour le chemin /categories
+      description: Met à jour une catégorie avec les champs nomCategorie, dateHeureCreation et dateHeureMAJ.
+      parameters:
+        - name: idCategorie
+          description: Identifiant de la catégorie.
           in: path
           required: true
           schema:
             type: integer
-      requestBody: # specification of the request body
+      requestBody:
         required: true
         content:
           application/json:
@@ -680,103 +693,79 @@ paths:
                   type: string
                 dateHeureCreation:
                   type: string
-                dateHeureMAJ: 
+                dateHeureMAJ:
                   type: string
       responses:
         200:
-          description: Categorie updated.
+          description: Catégorie mise à jour.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Client'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: '#/components/schemas/Card'
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
 
-    # request delete for the path /categories/{idCategorie}
     delete:
-      summary: Delete a categorie.
+      summary: Supprime une catégorie.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Requests for the path /categories
-      description: Delete a categorie with the idCategorie.
-      parameters: # parameters for the query
-        - name: id
-          description: Id of the categorie.
+        - Requêtes pour le chemin /categories
+      description: Supprime une catégorie à partir de son identifiant.
+      parameters:
+        - name: idCategorie
+          description: Identifiant de la catégorie.
           in: path
           required: true
           schema:
             type: integer
-
       responses:
         200:
-          description: Categorie deleted.
+          description: Catégorie supprimée.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ClientDeleted'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  
-  # subroute /categories/{idCategorie}/sous-categories
+                $ref: '#/components/schemas/Card'
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
   /categories/{idCategorie}/sous-categories:
-    # request get for the path /categories/{idCategorie}/sous-categories
     get:
-      summary: Returns a list of sous-categorie.
+      summary: Retourne une liste de sous-catégories.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Requests for the path /sous-categories
-      description: Returns a list of sous-categorie with the idSouscategorie, name, createdAt and updatedAt.
+        - Requêtes pour le chemin /sous-categories
+      description: Retourne une liste de sous-catégories avec les champs idSousCategorie, name, createdAt et updatedAt.
       responses:
         200:
-          description: An array of sous-categorie.
+          description: Un tableau de sous-catégories.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Class'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                  $ref: '#/components/schemas/Card'
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
 
-    # request post for the path /categories/{idCategorie}/sous-categories
     post:
-      summary: Create a new sous-categorie.
+      summary: Crée une nouvelle sous-catégorie.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Requests for the path /sous-categorie
-      description: Create a new class with the idSouscategorie, name, createdAt and updatedAt.
-      requestBody: # specification of the request body
+        - Requêtes pour le chemin /sous-categories
+      description: Crée une nouvelle sous-catégorie avec les champs name, createdAt et updatedAt.
+      requestBody:
         required: true
         content:
           application/json:
@@ -791,43 +780,34 @@ paths:
                   type: string
       responses:
         201:
-          description: Class created.
+          description: Sous-catégorie créée.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Class'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '409':
-          $ref: '#/components/responses/ConflictError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: '#/components/schemas/Card'
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '409': { $ref: '#/components/responses/ConflictError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
 
   /categories/{idCategorie}/sous-categories/{idSousCategorie}:
-      # request put for the path /categories/{idCategorie}/sous-categories/{idSousCategorie}
     put:
-      summary: Update a class.
+      summary: Met à jour une sous-catégorie.
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Requests for the path //categories/{idCategorie}/sous-categories/{idSousCategorie}
-      description: Update a class with the idSousCategorie, name, createdAt and updatedAt
-      parameters: # parameters for the query
-        - name: id
-          description: Id of the class.
+        - Requêtes pour le chemin /categories/{idCategorie}/sous-categories/{idSousCategorie}
+      description: Met à jour une sous-catégorie avec les champs name, createdAt et updatedAt.
+      parameters:
+        - name: idSousCategorie
+          description: Identifiant de la sous-catégorie.
           in: path
           required: true
           schema:
             type: integer
-      requestBody: # specification of the request body
+      requestBody:
         required: true
         content:
           application/json:
@@ -842,59 +822,42 @@ paths:
                   type: string
       responses:
         200:
-          description: Class updated.
+          description: Sous-catégorie mise à jour.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Class'
-        '400':
-          $ref: '#/components/responses/BadRequestError' 
-        '401':
-          $ref: '#/components/responses/UnauthorizedError' 
-        '403':
-          $ref: '#/components/responses/ForbiddenError' 
-        '404':
-          $ref: '#/components/responses/NotFoundError' 
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: '#/components/schemas/Card'
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
 
-    # request delete for the path /categories/{idCategorie}/sous-categories/{idSousCategorie}
     delete:
-      summary: Delete a sousCategorie.
+      summary: Supprime une sous-catégorie.
       security:
-        - bearerAuth: []
-      description: Delete a class with the idSousCategorie, name, createdAt and updatedAt
-      parameters: # parameters for the query
-        - name: id
-          description: Id of the class.
+        - bearerAuth: [ ]
+      description: Supprime une sous-catégorie à partir de son identifiant.
+      parameters:
+        - name: idSousCategorie
+          description: Identifiant de la sous-catégorie.
           in: path
           required: true
           schema:
             type: integer
-
       responses:
         200:
-          description: Class deleted.
+          description: Sous-catégorie supprimée.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ClassDeleted'
-        '400':
-          $ref: '#/components/responses/BadRequestError' 
-        '401':
-          $ref: '#/components/responses/UnauthorizedError' 
-        '403':
-          $ref: '#/components/responses/ForbiddenError' 
-        '404':
-          $ref: '#/components/responses/NotFoundError' 
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /v_categories:
+                $ref: '#/components/schemas/Card'
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    /v_categories:
     # request get for the path /v_categories
     get:
       summary: Returns a list of sous-categorie.
