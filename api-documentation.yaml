@@ -345,15 +345,15 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /utilisateurs/{id}/comptes/{id}:
-    # request get for the path /utilisateurs/{id}/comptes/{id}
+  /utilisateurs/{idUtilisateur}/comptes/{id}:
+    # request get for the path /utilisateurs/{idUtilisateur}/comptes/{idComptes}
      get:
       summary: Returns a list of committees.
       security:
         - bearerAuth: []
       tags:
         - Requests for the path /users
-      description: Returns a list of committees with the id and name.
+      description: Returns a list of committees with the idUtilisateur and name.
       responses:
         200:
           description: List of committees.
@@ -374,7 +374,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-    # request put for the path /utilisateurs/{id}/comptes{id}
+    # request put for the path /utilisateurs/{idUtilisateur}/comptes/{idComptes}
       put:
       summary: Update a committee.
       security:
@@ -593,9 +593,9 @@ paths:
                 nomCategorie:
                   type: string
                 dateHeureCreation:
-                  type: date
+                  type: string
                 dateHeureMAJ: 
-                  type: date
+                  type: string
       responses:
         201:
           description: Categories created.
@@ -654,7 +654,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-    # request put for the path /categories/{id}
+    # request put for the path /categories/{idCategorie}
     put:
       summary: Update a categorie.
       security:
@@ -679,9 +679,9 @@ paths:
                 nomCategorie:
                   type: string
                 dateHeureCreation:
-                  type: date
+                  type: string
                 dateHeureMAJ: 
-                  type: date
+                  type: string
       responses:
         200:
           description: Categorie updated.
@@ -702,7 +702,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-    # request delete for the path /categories/{id}
+    # request delete for the path /categories/{idCategorie}
     delete:
       summary: Delete a categorie.
       security:
@@ -768,14 +768,14 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-    # request post for the path /classes
+    # request post for the path /categories/{idCategorie}/sous-categories
     post:
-      summary: Create a new class.
+      summary: Create a new sous-categorie.
       security:
         - bearerAuth: []
       tags:
-        - Requests for the path /clients
-      description: Create a new class with the id, name and createdAt.
+        - Requests for the path /sous-categorie
+      description: Create a new class with the idSouscategorie, name, createdAt and updatedAt.
       requestBody: # specification of the request body
         required: true
         content:
@@ -785,7 +785,10 @@ paths:
               properties:
                 name:
                   type: string
-
+                createdAt:
+                  type: string
+                updatedAt:
+                  type: string
       responses:
         201:
           description: Class created.
@@ -808,15 +811,15 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /classes/{id}:
-      # request put for the path /classes/{id}
+  /categories/{idCategorie}/sous-categories/{idSousCategorie}:
+      # request put for the path /categories/{idCategorie}/sous-categories/{idSousCategorie}
     put:
       summary: Update a class.
       security:
         - bearerAuth: []
       tags:
-        - Requests for the path /clients
-      description: Update a class with the id, name and updatedAt.
+        - Requests for the path //categories/{idCategorie}/sous-categories/{idSousCategorie}
+      description: Update a class with the idSousCategorie, name, createdAt and updatedAt
       parameters: # parameters for the query
         - name: id
           description: Id of the class.
@@ -832,6 +835,10 @@ paths:
               type: object
               properties:
                 name:
+                  type: string
+                createdAt:
+                  type: string
+                updatedAt:
                   type: string
       responses:
         200:
@@ -853,14 +860,12 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-    # request delete for the path /classes/{id}
+    # request delete for the path /categories/{idCategorie}/sous-categories/{idSousCategorie}
     delete:
-      summary: Delete a class.
+      summary: Delete a sousCategorie.
       security:
         - bearerAuth: []
-      tags:
-        - Requests for the path /clients
-      description: Delete a class with the id and create the field deletedAt.
+      description: Delete a class with the idSousCategorie, name, createdAt and updatedAt
       parameters: # parameters for the query
         - name: id
           description: Id of the class.
@@ -889,14 +894,12 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /classes/{id}/clients:
-    # request get for the path /classes/{id}/clients
+  /v_categories:
+    # request get for the path /v_categories
     get:
-      summary: Returns a class by its id with the list of clients.
+      summary: Returns a list of sous-categorie.
       security:
         - bearerAuth: []
-      tags:
-        - Requests for the path /clients
       description: Returns a class with the id, name, createdAt and updatedAt and the list of clients.
       parameters: # parameters for the query
         - name: id
