@@ -7,42 +7,14 @@ servers:
     - url: http://localhost:3000/api/v1/
       description: Serveur de développement de l'API
 paths:
-  # route /generateTokenTemp
-  /generateTokenTemp:
-    # request post for the path /generateTokenTemp
-    post:
-      summary: Generate a temporary token to create a user.
-      tags:
-        - Requests for the path /generateTokenTemp
-      description: Generate a temporary token to create a user when no user is present in the database.
-      responses:
-        200:
-          description: Token generated.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TokenTemp'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  # route /login
-  /login:
+  # route /auth
+  /authenticate:
     # request post for the path /login
     post:
-      summary: Login to the API.
+      summary: Se connecter à l'API.
       tags:
-        - Requests for the path /login
-      description: Login to the API with the name and password.
+        - Authentifiation
+      description: Se connecter avec un login et mot de passe.
       requestBody: # specification of the request body
         required: true
         content:
@@ -50,32 +22,19 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                login:
                   type: string
-                password:
+                motDePasse:
                   type: string
                   format: password
 
       responses:
-        200:
-          description: Login successful.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
+        '200':
+          $ref: '#/components/responses/Success'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
   # route /utilisateurs
   /utilisateurs:
     # request get for the path /utilisateurs
@@ -108,8 +67,8 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la route /utilisateurs
-      description: Créé un nouvel utilisateur avec le nom, le prenom, le mot de passe, la ville, le code postal et la date de création.
+        - Utilisateurs
+      description: Créé un nouvel utilisateur avec le nom, le prenom, le mot de passe, la ville et le code postal.
       requestBody: # specification of the request body
         required: true
         content:
@@ -117,15 +76,20 @@ paths:
             schema:
               type: object
               properties:
-                firstName:
+                nomUtilisateur:
                   type: string
-                lastName:
+                prenomUtilisateur:
                   type: string
-                password:
+                motDePasse:
                   type: string
                   format: password
-                  
+                ville:
+                  type: string
+                codePostal: 
+                  type: string
       responses:
+        '200':
+          $ref: '#/components/responses/Success'
         '201':
           $ref: '#/components/responses/Created'
         '400':
@@ -136,6 +100,8 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
         '409':
           $ref: '#/components/responses/ConflictError'
         '500':
@@ -148,17 +114,11 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la route /utilisateurs
-      description: Récupère un utilisateur avec l'id, le nom, le prenom, le login, la ville,le code postal et la date de création.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
-    
+        - Utilisateurs
+      description: Récupère un utilisateur avec l'id, le nom, le prenom, le login, la ville et le code postal.
       responses:
+        '200':
+          $ref: '#/components/responses/Success'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -167,6 +127,8 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -176,16 +138,8 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la route /utilisateurs
+        - Utilisateurs
       description: Met à jour plusieurs informations d'un utilisateur comme le nom, le prenom, le mot de passe, le login, la ville et le code postal.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur
-          in: path
-          required: true
-          schema:
-            type: integer
-        
 
       requestBody: # specification of the request body
         required: false
@@ -194,20 +148,21 @@ paths:
             schema:
               type: object
               properties:
-                firstName:
+                nomUtilisateur:
                   type: string
-                lastName:
+                prenomUtilisateur:
+                  type: string
+                motdepasse:
+                  type: string
+                  format: password
+                ville:
+                  type: string
+                codePostal: 
                   type: string
 
       responses:
-        200:
-          description: Utilisateur mis à jour
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+        '200':
+          $ref: '#/components/responses/Success'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -216,6 +171,8 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
         '500':
           $ref: '#/components/responses/InternalServerError'
   
@@ -225,7 +182,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la route /utilisateurs
+        - Utilisateurs
       description: Met à jour partiellement les informations d'un utilisateur comme le nom, le prenom, le mot de passe, le login, la ville et le code postal.
       parameters: # parameters for the query
         - name: idUtilisateur
@@ -241,21 +198,21 @@ paths:
           application/json:
             schema:
               type: object
-              properties:
-                firstName:
+            properties:
+                nomUtilisateur:
                   type: string
-                lastName:
+                prenomUtilisateur:
                   type: string
-
+                motdepasse:
+                  type: string
+                  format: password
+                ville:
+                  type: string
+                codePostal: 
+                  type: string
       responses:
-        200:
-          description: Utilisateur mis à jour partiellement
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+        '200':
+          $ref: '#/components/responses/Success'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -264,6 +221,8 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
         '500':
           $ref: '#/components/responses/InternalServerError'
     
@@ -273,7 +232,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la route /utilisateurs
+        - Utilisateurs
       description: Met à jour partiellement les informations d'un utilisateur comme le nom, le prenom, le mot de passe, le login, la ville et le code postal.
       parameters: # parameters for the query
         - name: idUtilisateur
@@ -284,14 +243,12 @@ paths:
             type: integer
 
       responses:
-        200:
-          description: Utilisateur supprimé
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+        '200':
+          $ref: '#/components/responses/Success'
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '303':
+          $ref: '#/components/responses/SeeOther'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -300,21 +257,16 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
         '500':
           $ref: '#/components/responses/InternalServerError'
     
-  # subroute /utilisateurs/{idUtilisateur}/comptes
-  /utilisateurs/{idUtilisateur}/comptes:
-    # request get for the path /utilisateurs/{idUtilisateur}/comptes
+  # subroute /comptes
+  /comptes:
+    # request get for the path /comptes
     get:
       summary: Récupère la liste des comptes d'un utilisateur
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur
-          in: path
-          required: true
-          schema:
-            type: integer
 
       security:
         - bearerAuth: []
@@ -338,22 +290,15 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-    # request post for the path /utilisateurs/{idUtilisateur}/comptes
+    # request post for the path /comptes
     post:
       summary: Créé un nouveau compte pour un utilisateur.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur
-          in: path
-          required: true
-          schema:
-            type: integer
-
+    
       security:
         - bearerAuth: []
       tags:
-        - Requests for the path /users
-      description: Create a new committee with the id, name and createdAt.
+        - Comptes
+      description: Créé un nouveau compte pour un utilisateur avec les champs descriptionCompte, nomBanque, soldeInitial et dernierSolde.
       requestBody: # specification of the request body
         required: true
         content:
@@ -361,8 +306,495 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                descriptionCompte:
                   type: string
+                nomBanque:
+                  type: string
+                soldeInitial:
+                  type: number
+                dernierSolde:
+                  type: number
+                  
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+
+  /comptes/{idCompte}:
+    # request get for the path /comptes/{idCompte}
+    get:
+      summary: Récupère les information sur le compte d'un utilisateur
+      parameters: # parameters for the query
+        - name: idCompte
+          description: Id du compte
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      tags:
+        - Comptes
+      description: Récupère l'ensemble des informations sur le compte d'un utilisateur (idCompte, descriptionCompte, nomBanque, idUtilisateur, dateHeureCreation,dateHeureMAJ,soldeInitial et dernierSolde).
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request put for the path /comptes/{idCompte}
+    put:
+      summary: Met à jour les informations d'un compte utilisateur.
+      security:
+        - bearerAuth: []
+      tags:
+        - Comptes
+      description: Met à jour les informations d'un compte utilisateur (descriptionCompte, nomBanque, soldeInitial et dernierSolde).
+      parameters: # parameters for the query
+        - name: idCompte
+          description: Id du compte
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                descriptionCompte:
+                  type: string
+                nomBanque:
+                  type: string
+                soldeInitial:
+                  type: number
+                dernierSolde:
+                  type: number
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    # request patch for the path /comptes
+    patch:
+      summary: Met à jour partiellement les informations d'un compte utilisateur.
+      security:
+        - bearerAuth: []
+      tags:
+        - Comptes
+      description: Met à jour partiellement les informations d'un compte utilisateur (descriptionCompte, nomBanque, soldeInitial et dernierSolde).
+      parameters: # parameters for the query      
+        - name: idCompte
+          description: Id du compte
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            properties:
+                descriptionCompte:
+                  type: string
+                nomBanque:
+                  type: string
+                soldeInitial:
+                  type: number
+                dernierSolde:
+                  type: number
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    # request delete for the path /comptes/{idCompte}
+    delete:
+      summary: Supprime un compte utilisateur.
+      security:
+        - bearerAuth: []
+      tags:
+        - Comptes
+      description: Supprime un compte utilisateur de la base de donnée grâce à son id.
+      parameters: # parameters for the query
+        - name: idCompte
+          description: Id du compte
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '204':
+          '$ref': '#/components/responses/NoContent'
+        '303':
+          $ref: '#/components/responses/SeeOther'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+###################################Mouvements##################################
+
+  /mouvements:
+    # request get for the path /mouvements
+    get:
+      summary: Récupère la liste des mouvements d'un utilisateur.
+      security:
+        - bearerAuth: []
+      tags:
+        - Mouvements
+      description: Récupère tous les mouvements liées à cet utilisateur.
+      parameters: # parameters for the query
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    # request post for the path /mouvements
+    post:
+      summary: Crée un nouveau mouvement pour un utilisateur.
+      security:
+        - bearerAuth: []
+      tags:
+        - Mouvements
+      description: Crée un nouveau mouvement pour un utilisateur avec les champs idCompte, IdTiers, IdCategorie, idSousCategorie, typeMouvement et le montant
+      parameters: # parameters for the query
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                typeMouvement:
+                  type: string
+                montant:
+                  type: number
+                dateMouvement:
+                  type: date
+                idCompte:
+                  type: integer
+                idTiers:
+                  type: integer
+                idCategorie:
+                  type: integer
+                idSousCategorie:
+                  type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /mouvements/{idMouvement}:
+    # request get for the path /mouvements/{idMouvement}
+    get:
+      summary: Récupère un mouvement par son id.
+      security:
+        - bearerAuth: []
+      tags:
+        - Mouvements
+      description: Récupère un mouvement avec l'id, idCompte, IdTiers, IdCategorie, idSousCategorie, le typeMouvement, le montant, la dateHeureCreation et la dateHeureMAJ.
+      parameters: # parameters for the query
+        - name: idMouvement
+          description: Id du mouvement.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request put for the path /mouvements/{idMouvement}
+    put:
+      summary: Met à jour un mouvement.
+      security:
+        - bearerAuth: []
+      tags:
+        - Mouvements
+      description: Met à jour un mouvement avec les champs idCompte, IdTiers, IdCategorie, idSousCategorie, typeMouvement, montant, dateHeureCreation et dateHeureMAJ.
+      parameters: # parameters for the query
+        - name: idMouvement
+          description: Id du mouvement.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                typeMouvement:
+                  type: string
+                montant:
+                  type: number
+                dateMouvement:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request patch for the path /mouvements/{idMouvement}
+    patch:
+      summary: Met à jour partiellement un mouvement.
+      security:
+        - bearerAuth: []
+      tags:
+        - Mouvements
+      description: Met à jour partiellement un mouvement avec les champs idCompte, IdTiers, IdCategorie, idSousCategorie, typeMouvement, montant, dateHeureCreation et dateHeureMAJ.
+      parameters: # parameters for the query
+        - name: idMouvement
+          description: Id du mouvement.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                typeMouvement:
+                  type: string
+                montant:
+                  type: number
+                dateMouvement:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    # request delete for the path /mouvements/{idMouvement}
+    delete:
+      summary: Supprime un mouvement.
+      security:
+        - bearerAuth: []
+      tags:
+        - Mouvements
+      description: Supprime un mouvement de la base de donnée grâce à son id.
+      parameters: # parameters for the query
+        - name: idMouvement
+          description: Id du mouvement.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '204':
+          '$ref': '#/components/responses/NoContent'
+        '303':
+          $ref: '#/components/responses/SeeOther'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /comptes/{idCompte}/mouvements:
+    # request get for the path /comptes/{idCompte}/mouvements
+    get:
+      summary: Récupère la liste des mouvements d'un compte utilisateur.
+      security:
+        - bearerAuth: []
+      tags:
+        - Mouvements d'un compte
+      description: Récupère tous les mouvements liées à ce compte utilisateur.
+      parameters: # parameters for the query
+        - name: idCompte
+          description: Id du compte.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError' 
+          
+    /comptes/{idCompte}/mouvements:
+    # request post for the path /comptes/{idCompte}/mouvements
+    post:
+      summary: Crée un mouvement d'un compte d'utilisateur.
+      security:
+        - bearerAuth: []
+      tags:
+        - Mouvements d'un compte
+      description:  Crée un mouvement d'un compte d'utilisateur avec les champs typeMouvement, montant, dateMouvement, idCompte, idTiers, idCategorie et idSousCategorie.
+      parameters: # parameters for the query
+        - name: idCompte
+          description: Id du compte.
+          in: path
+          required: true
+          schema:
+            type: integer
+              content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                typeMouvement:
+                  type: string
+                montant:
+                  type: number
+                dateMouvement:
+                  type: date
+                idCompte:
+                  type: integer
+                idTiers:
+                  type: integer
+                idCategorie:
+                  type: integer
+                idSousCategorie:
+                  type: integer
+
       responses:
         '200':
           $ref: '#/components/responses/Success'
@@ -382,428 +814,40 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
 
-  /utilisateurs/{idUtilisateur}/comptes/{idCompte}:
-    # request get for the path /utilisateurs/{idUtilisateur}/comptes/{idCompte}
-    get:
-      summary: Récupère les information sur le compte d'un utilisateur
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur
-          in: path
-          required: true
-          schema:
-            type: integer
-
-        - name: idCompte
-          description: Id du compte
-          in: path
-          required: true
-          schema:
-            type: integer
-      security:
-        - bearerAuth: []
-      tags:
-        - Requests for the path /users
-      description: Récupère l'ensemble des informations sur le compte d'un utilisateur (idCompte, descriptionCompte, nomBanque, idUtilisateur, dateHeureCreation,dateHeureMAJ,soldeInitial et dernierSolde).
-      responses:
-        200:
-          description: Compte trouvé.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Committee'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    # request put for the path /utilisateurs/{idUtilisateur}/comptes/{idCompte}
-    put:
-      summary: Met à jour les informations d'un compte utilisateur.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/comptes
-      description: Met à jour les informations d'un compte utilisateur (descriptionCompte, nomBanque, soldeInitial et dernierSolde).
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur
-          in: path
-          required: true
-          schema:
-            type: integer
-       
-        - name: idCompte
-          description: Id du compte
-          in: path
-          required: true
-          schema:
-            type: integer
-
-      requestBody: # specification of the request body
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-      responses:
-        200:
-          description: Compte mis à jour.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Committee'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    # request patch for the path /utilisateurs/{idUtilisateur}/comptes
-    patch:
-      summary: Met à jour partiellement les informations d'un compte utilisateur.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/comptes
-      description: Met à jour partiellement les informations d'un compte utilisateur (descriptionCompte, nomBanque, soldeInitial et dernierSolde).
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur
-          in: path
-          required: true
-          schema:
-            type: integer
-       
-        - name: idCompte
-          description: Id du compte
-          in: path
-          required: true
-          schema:
-            type: integer
-
-      requestBody: # specification of the request body
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-      responses:
-        200:
-          description: Compte mis à jour partiellement.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Committee'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-    
-    # request delete for the path /utilisateurs/{idUtilisateur}/comptes/{idCompte}
-    delete:
-      summary: Supprime un compte utilisateur.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/comptes
-      description: Supprime un compte utilisateur de la base de donnée grâce à son id.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur
-          in: path
-          required: true
-          schema:
-            type: integer
-       
-        - name: idCompte
-          description: Id du compte
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        200:
-          description: Compte supprimé.
-
-###################################Mouvements##################################
-
-  /utilisateurs/{idUtilisateur}/mouvements:
-    # request get for the path /utilisateurs/{idUtilisateur}/mouvements
-    get:
-      summary: Récupère la liste des mouvements d'un utilisateur.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/mouvements
-      description: Récupère tous les mouvements liées à cet utilisateur.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        200:
-          description: Liste des mouvements.
-    
-    # request post for the path /utilisateurs/{idUtilisateur}/mouvements
-    post:
-      summary: Crée un nouveau mouvement pour un utilisateur.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/mouvements
-      description: Crée un nouveau mouvement pour un utilisateur avec les champs idUtilisateur, idCompte, IdTiers, IdCategorie, idSousCategorie,, typeMouvement, montant, dateHeureCreation et dateHeureMAJ.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody: # specification of the request body
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                typeMouvement:
-                  type: string
-                montant:
-                  type: number
-                dateHeureCreation:
-                  type: string
-                dateHeureMAJ:
-                  type: string
-      responses:
-        201:
-          description: Mouvement créé.
-
-  /utilisateurs/{idUtilisateur}/mouvements/{idMouvement}:
-    # request get for the path /utilisateurs/{idUtilisateur}/mouvements/{idMouvement}
-    get:
-      summary: Récupère un mouvement par son id.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/mouvements
-      description: Récupère un mouvement avec l'id, idCompte, IdTiers, IdCategorie, idSousCategorie, le typeMouvement, le montant, la dateHeureCreation et la dateHeureMAJ.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: idMouvement
-          description: Id du mouvement.
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        200:
-          description: Mouvement trouvé.
-
-    # request put for the path /utilisateurs/{idUtilisateur}/mouvements/{idMouvement}
-    put:
-      summary: Met à jour un mouvement.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/mouvements
-      description: Met à jour un mouvement avec les champs idCompte, IdTiers, IdCategorie, idSousCategorie, typeMouvement, montant, dateHeureCreation et dateHeureMAJ.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: idMouvement
-          description: Id du mouvement.
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody: # specification of the request body
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                typeMouvement:
-                  type: string
-                montant:
-                  type: number
-                dateHeureCreation:
-                  type: string
-                dateHeureMAJ:
-                  type: string
-      responses:
-        200:
-          description: Mouvement mis à jour.
-
-    # request patch for the path /utilisateurs/{idUtilisateur}/mouvements/{idMouvement}
-    patch:
-      summary: Met à jour partiellement un mouvement.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/mouvements
-      description: Met à jour partiellement un mouvement avec les champs idCompte, IdTiers, IdCategorie, idSousCategorie, typeMouvement, montant, dateHeureCreation et dateHeureMAJ.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: idMouvement
-          description: Id du mouvement.
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody: # specification of the request body
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                typeMouvement:
-                  type: string
-                montant:
-                  type: number
-                dateHeureCreation:
-                  type: string
-                dateHeureMAJ:
-                  type: string
-      responses:
-        200:
-          description: Mouvement mis à jour partiellement.
-
-    # request delete for the path /utilisateurs/{idUtilisateur}/mouvements/{idMouvement}
-    delete:
-      summary: Supprime un mouvement.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/mouvements
-      description: Supprime un mouvement de la base de donnée grâce à son id.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: idMouvement
-          description: Id du mouvement.
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        200:
-          description: Mouvement supprimé.
-
-  /utilisateurs/{idUtilisateur}/comptes/{idCompte}/mouvements:
-    # request get for the path /utilisateurs/{idUtilisateur}/comptes/{idCompte}/mouvements
-    get:
-      summary: Récupère la liste des mouvements d'un compte utilisateur.
-      security:
-        - bearerAuth: []
-      tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/comptes/{idCompte}/mouvements
-      description: Récupère tous les mouvements liées à ce compte utilisateur.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: idCompte
-          description: Id du compte.
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        200:
-          description: Liste des mouvements du compte.
-
 ##################################TIERS##################################
-  /utilisateurs{idUtilisateur}/tiers:
-    #resquest get for the path /utilisateurs/{idUtilisateur}/tiers
+  /tiers:
+    #resquest get for the path /tiers
     get:
       summary: Récupère la liste des tiers d'un utilisateur.
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/tiers
+        - Tiers
       description: Récupère tous les tiers liés à cet utilisateur.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
       responses:
-        200:
-          description: Liste des tiers de l'utilisateur.
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
-    # request post for the path /utilisateurs/{idUtilisateur}/tiers
+    # request post for the path /tiers
     post:
       summary: Crée un nouveau tiers pour un utilisateur.
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/tiers
-      description: Crée un nouveau tiers pour un utilisateur avec les champs idUtilisateur, nomTiers, dateHeureCreation et dateHeureMAJ.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
+        - Tiers
+      description: Crée un nouveau tiers pour un utilisateur avec les champs idUtilisateur et nomTiers
       requestBody: # specification of the request body
         required: true
         content:
@@ -813,30 +857,37 @@ paths:
               properties:
                 nomTiers:
                   type: string
-                dateHeureCreation:
-                  type: string
-                dateHeureMAJ:
-                  type: string
       responses:
-        201:
-          description: Tiers créé.
+        '200':
+          $ref: '#/components/responses/Success'
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '409': 
+          $ref: '#/components/responses/ConflictError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
-  /utilisateurs/{idUtilisateur}/tiers/{idTiers}:
-    # request get for the path /utilisateurs/{idUtilisateur}/tiers/{idTiers}
+  /tiers/{idTiers}:
+    # request get for the path /tiers/{idTiers}
     get:
       summary: Récupère un tiers par son id.
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/tiers
-      description: Récupère un tiers avec l'id, nomTiers, dateHeureCreation et dateHeureMAJ.
+        - Tiers
+      description: Récupère un tiers avec l'id, nomTiers, dateHeureCreation et dateHeureMAJ
       parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
+      
         - name: idTiers
           description: Id du tiers.
           in: path
@@ -844,24 +895,30 @@ paths:
           schema:
             type: integer
       responses:
-        200:
-          description: Tiers trouvé.
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
-    # request put for the path /utilisateurs/{idUtilisateur}/tiers/{idTiers}
+    # request put for the path /tiers/{idTiers}
     put:
       summary: Met à jour un tiers.
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/tiers
-      description: Met à jour un tiers avec les champs nomTiers, dateHeureCreation et dateHeureMAJ.
+        - Tiers
+      description: Met à jour un tiers avec le champ nomTiers
       parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
         - name: idTiers
           description: Id du tiers.
           in: path
@@ -877,29 +934,31 @@ paths:
               properties:
                 nomTiers:
                   type: string
-                dateHeureCreation:
-                  type: string
-                dateHeureMAJ:
-                  type: string
-      responses:
-        200:
-          description: Tiers mis à jour.
+        responses:
+          '200':
+            $ref: '#/components/responses/Success'
+          '400':
+            $ref: '#/components/responses/BadRequestError'
+          '401':
+            $ref: '#/components/responses/UnauthorizedError'
+          '403':
+            $ref: '#/components/responses/ForbiddenError'
+          '404':
+            $ref: '#/components/responses/NotFoundError'
+          '406':
+            $ref: '#/components/responses/NotAcceptableError'
+          '500':
+            $ref: '#/components/responses/InternalServerError'
     
-    # request delete for the path /utilisateurs/{idUtilisateur}/tiers/{idTiers}
+    # request delete for the path /tiers/{idTiers}
     delete:
       summary: Supprime un tiers.
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/tiers
+        - Tiers
       description: Supprime un tiers de la base de donnée grâce à son id.
       parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
         - name: idTiers
           description: Id du tiers.
           in: path
@@ -907,45 +966,61 @@ paths:
           schema:
             type: integer
       responses:
-        200:
-          description: Tiers supprimé.
+        '200':
+          $ref: '#/components/responses/Success'
+        '204':
+          '$ref': '#/components/responses/NoContent'
+        '303':
+          $ref: '#/components/responses/SeeOther'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 ####################################VIREMENTS####################################
-  /utilisateurs/{idUtilisateur}/virements:
-    # request get for the path /utilisateurs/{idUtilisateur}/virements
+  /virements:
+    # request get for the path /virements
     get:
       summary: Récupère la liste des virements d'un utilisateur.
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/virements
+        - Virements
       description: Récupère tous les virements liés à cet utilisateur.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
+ 
       responses:
-        200:
-          description: Liste des virements de l'utilisateur.
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
-    # request post for the path /utilisateurs/{idUtilisateur}/virements
+    # request post for the path /virements
     post:
       summary: Crée un nouveau virement pour un utilisateur.
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/virements
-      description: Crée un nouveau virement pour un utilisateur avec les champs IdCategorie, IdCompteDebit, IdCompteCredit, montant,dateVirement, dateHeureCreation et dateHeureMAJ.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
+        - Virements
+      description: Crée un nouveau virement pour un utilisateur avec les champs IdCategorie, IdCompteDebit, IdCompteCredit, montant et la dateVirement
+ 
       requestBody: # specification of the request body
         required: true
         content:
@@ -963,30 +1038,35 @@ paths:
                   type: number
                 dateVirement:
                   type: string
-                dateHeureCreation:
-                  type: string
-                dateHeureMAJ:
-                  type: string
       responses:
-        201:
+        '200':
+          $ref: '#/components/responses/Success'
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
           description: Virement créé.
 
-  /utilisateurs/{idUtilisateur}/virements/{idVirement}:
-  # request get for the path /utilisateurs/{idUtilisateur}/virements/{idVirement}
+  /virements/{idVirement}:
+  # request get for the path /virements/{idVirement}
     get:
       summary: Récupère un virement par son id.
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/virements
+        - Virements
       description: Récupère un virement avec l'id, IdCategorie, IdCompteDebit, IdCompteCredit, montant, dateVirement, dateHeureCreation et dateHeureMAJ.
       parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
         - name: idVirement
           description: Id du virement.
           in: path
@@ -994,24 +1074,30 @@ paths:
           schema:
             type: integer
       responses:
-        200:
-          description: Virement trouvé.
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
-    # request put for the path /utilisateurs/{idUtilisateur}/virements/{idVirement}
+    # request put for the path /virements/{idVirement}
     put:
       summary: Met à jour un virement.
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/virements
+        - Virements
       description: Met à jour un virement avec les champs IdCategorie, IdCompteDebit, IdCompteCredit, montant, dateVirement, dateHeureCreation et dateHeureMAJ.
       parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
         - name: idVirement
           description: Id du virement.
           in: path
@@ -1025,39 +1111,35 @@ paths:
             schema:
               type: object
               properties:
-                IdCategorie:
-                  type: integer
-                IdCompteDebit:
-                  type: integer
-                IdCompteCredit:
-                  type: integer
                 montant:
                   type: number
                 dateVirement:
                   type: string
-                dateHeureCreation:
-                  type: string
-                dateHeureMAJ:
-                  type: string
-      responses:
-        200:
-          description: Virement mis à jour.
+        responses:
+          '200':
+            $ref: '#/components/responses/Success'
+          '400':
+            $ref: '#/components/responses/BadRequestError'
+          '401':
+            $ref: '#/components/responses/UnauthorizedError'
+          '403':
+            $ref: '#/components/responses/ForbiddenError'
+          '404':
+            $ref: '#/components/responses/NotFoundError'
+          '406':
+            $ref: '#/components/responses/NotAcceptableError'
+          '500':
+            $ref: '#/components/responses/InternalServerError'
 
-    # request delete for the route /utilisateurs/{idUtilisateur}/virements/{idVirement}
+    # request delete for the route /virements/{idVirement}
     delete:
       summary: Supprime un virement.
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/virements
+        - Virements
       description: Supprime un virement de la base de donnée grâce à son id.
       parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur.
-          in: path
-          required: true
-          schema:
-            type: integer
         - name: idVirement
           description: Id du virement.
           in: path
@@ -1065,9 +1147,24 @@ paths:
           schema:
             type: integer
       responses:
-        200:
-          description: Virement supprimé.
-
+        '200':
+          $ref: '#/components/responses/Success'
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '303':
+          $ref: '#/components/responses/SeeOther'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   ###################################################################################
   # routes pour les catégories
@@ -1085,30 +1182,32 @@ paths:
       security:
         - bearerAuth: [ ]
       tags:
-        - Requêtes pour le chemin /categories
+        - Categories
       description: Retourne une liste de catégories avec les champs idCategorie, nomCategorie, dateHeureCreation et dateHeureMAJ.
       responses:
-        200:
-          description: Un tableau de catégories.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Card'
-        '400': { $ref: '#/components/responses/BadRequestError' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' }
-        '403': { $ref: '#/components/responses/ForbiddenError' }
-        '404': { $ref: '#/components/responses/NotFoundError' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 
     post:
-      summary: Crée une nouvelle catégorie.
+      summary: Catégorie.
       security:
         - bearerAuth: [ ]
       tags:
-        - Requêtes pour le chemin /categories
-      description: Crée une nouvelle catégorie avec les champs nomCategorie, dateHeureCreation et dateHeureMAJ.
+        - Categories
+      description: Crée une nouvelle catégorie avec le champ nomCategorie.
       requestBody:
         required: true
         content:
@@ -1118,23 +1217,23 @@ paths:
               properties:
                 nomCategorie:
                   type: string
-                dateHeureCreation:
-                  type: string
-                dateHeureMAJ:
-                  type: string
       responses:
-        201:
-          description: Catégorie créée.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Card'
-        '400': { $ref: '#/components/responses/BadRequestError' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' }
-        '403': { $ref: '#/components/responses/ForbiddenError' }
-        '404': { $ref: '#/components/responses/NotFoundError' }
-        '409': { $ref: '#/components/responses/ConflictError' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '200':
+          $ref: '#/components/responses/Success'
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'     
 
   /categories/{idCategorie}:
     get:
@@ -1142,7 +1241,7 @@ paths:
       security:
         - bearerAuth: [ ]
       tags:
-        - Requêtes pour le chemin /categories
+        - Categories
       description: Retourne une catégorie avec les champs idCategorie, nomCategorie, dateHeureCreation et dateHeureMAJ.
       parameters:
         - name: idCategorie
@@ -1152,24 +1251,28 @@ paths:
           schema:
             type: integer
       responses:
-        200:
-          description: Catégorie trouvée.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Card'
-        '400': { $ref: '#/components/responses/BadRequestError' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' }
-        '403': { $ref: '#/components/responses/ForbiddenError' }
-        '404': { $ref: '#/components/responses/NotFoundError' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 
     put:
       summary: Met à jour une catégorie.
       security:
         - bearerAuth: [ ]
       tags:
-        - Requêtes pour le chemin /categories
+        - Categories
       description: Met à jour une catégorie avec les champs nomCategorie, dateHeureCreation et dateHeureMAJ.
       parameters:
         - name: idCategorie
@@ -1187,29 +1290,28 @@ paths:
               properties:
                 nomCategorie:
                   type: string
-                dateHeureCreation:
-                  type: string
-                dateHeureMAJ:
-                  type: string
       responses:
-        200:
-          description: Catégorie mise à jour.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Card'
-        '400': { $ref: '#/components/responses/BadRequestError' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' }
-        '403': { $ref: '#/components/responses/ForbiddenError' }
-        '404': { $ref: '#/components/responses/NotFoundError' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     delete:
       summary: Supprime une catégorie.
       security:
         - bearerAuth: [ ]
       tags:
-        - Requêtes pour le chemin /categories
+        - Categories
       description: Supprime une catégorie à partir de son identifiant.
       parameters:
         - name: idCategorie
@@ -1219,17 +1321,24 @@ paths:
           schema:
             type: integer
       responses:
-        200:
-          description: Catégorie supprimée.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Card'
-        '400': { $ref: '#/components/responses/BadRequestError' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' }
-        '403': { $ref: '#/components/responses/ForbiddenError' }
-        '404': { $ref: '#/components/responses/NotFoundError' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '200':
+          $ref: '#/components/responses/Success'
+        '204':
+          '$ref': '#/components/responses/NoContent'
+        '303':
+          $ref: '#/components/responses/SeeOther'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /categories/{idCategorie}/sous-categories:
     get:
@@ -1244,28 +1353,30 @@ paths:
       security:
         - bearerAuth: [ ]
       tags:
-        - Requêtes pour le chemin /sous-categories
-      description: Retourne une liste de sous-catégories avec les champs idSousCategorie, name, createdAt et updatedAt.
+        - Sous-categories
+      description: Retourne une liste de sous-catégories avec les champs idSousCategorie, nomSousCategorie, idCategorie, dateHeureCreation et dateHeureMAJ.
       responses:
-        200:
-          description: Un tableau de sous-catégories.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Card'
-        '400': { $ref: '#/components/responses/BadRequestError' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' }
-        '403': { $ref: '#/components/responses/ForbiddenError' }
-        '404': { $ref: '#/components/responses/NotFoundError' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 
     post:
       summary: Crée une nouvelle sous-catégorie.
       parameters:
         - name: idCategorie
-          description: Identifiant de la catégorie.
+          description: Identifiant de la catégorie
           in: path
           required: true
           schema:
@@ -1274,8 +1385,8 @@ paths:
       security:
         - bearerAuth: [ ]
       tags:
-        - Requêtes pour le chemin /sous-categories
-      description: Crée une nouvelle sous-catégorie avec les champs name, createdAt et updatedAt.
+        - Sous-categories
+      description: Crée une nouvelle sous-catégorie avec les champs nomSousCategorie et idCategorie.
       requestBody:
         required: true
         content:
@@ -1283,25 +1394,28 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                nomSousCategorie:
                   type: string
-                createdAt:
-                  type: string
-                updatedAt:
-                  type: string
+                idCategorie:
+                  type: integer
       responses:
-        201:
-          description: Sous-catégorie créée.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Card'
-        '400': { $ref: '#/components/responses/BadRequestError' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' }
-        '403': { $ref: '#/components/responses/ForbiddenError' }
-        '404': { $ref: '#/components/responses/NotFoundError' }
-        '409': { $ref: '#/components/responses/ConflictError' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '200':
+          $ref: '#/components/responses/Success'
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 
   /categories/{idCategorie}/sous-categories/{idSousCategorie}:
     put:
@@ -1309,8 +1423,8 @@ paths:
       security:
         - bearerAuth: [ ]
       tags:
-        - Requêtes pour le chemin /categories/{idCategorie}/sous-categories/{idSousCategorie}
-      description: Met à jour une sous-catégorie avec les champs name, createdAt et updatedAt.
+        - Sous-categories
+      description: Met à jour une sous-catégorie avec le champ nomSousCategorie.
       parameters:
         - name: idSousCategorie
           description: Identifiant de la sous-catégorie.
@@ -1332,29 +1446,31 @@ paths:
             schema:
               type: object
               properties:
-                name:
-                  type: string
-                createdAt:
-                  type: string
-                updatedAt:
+                nomSousCategorie:
                   type: string
       responses:
-        200:
-          description: Sous-catégorie mise à jour.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Card'
-        '400': { $ref: '#/components/responses/BadRequestError' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' }
-        '403': { $ref: '#/components/responses/ForbiddenError' }
-        '404': { $ref: '#/components/responses/NotFoundError' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 
     delete:
       summary: Supprime une sous-catégorie.
       security:
         - bearerAuth: [ ]
+      tags:
+        - Sous-categories
       description: Supprime une sous-catégorie à partir de son identifiant.
       parameters:
         - name: idSousCategorie
@@ -1371,17 +1487,25 @@ paths:
             type: integer
 
       responses:
-        200:
-          description: Sous-catégorie supprimée.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Card'
-        '400': { $ref: '#/components/responses/BadRequestError' }
-        '401': { $ref: '#/components/responses/UnauthorizedError' }
-        '403': { $ref: '#/components/responses/ForbiddenError' }
-        '404': { $ref: '#/components/responses/NotFoundError' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '200':
+          $ref: '#/components/responses/Success'
+        '204':
+          '$ref': '#/components/responses/NoContent'
+        '303':
+          $ref: '#/components/responses/SeeOther'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   ###################################################################################
 
   # components
@@ -1427,9 +1551,47 @@ components:
           type: string
         message:
           type: string
-
+    
+    # schema for the success responses
+    Success:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+      
   # responses
   responses:
+   # 200 Success
+    Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Success'
+    # 201 Created
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Success'
+    # 204 No Content
+    NoContent:
+      description: No Content
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Success'
+    # 303 See Other
+    SeeOther:
+      description: See Other
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Success'     
     # 400 Bad Request
     BadRequestError:
       description: Bad Request
@@ -1458,6 +1620,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'  
+    # 406 Not Acceptable
+    NotAcceptableError:
+      description: Not Acceptable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     # 409 Conflict
     ConflictError:
       description: Conflict
