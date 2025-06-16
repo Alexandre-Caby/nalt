@@ -8,7 +8,8 @@ router.get('/', (req, res) => {
 
 // POST /api/utilisateurs - Create a new user
 router.post('/', (req, res) => {
-    if (!req.user.password && !req.user.login) {
+  console.log('Received user creation request:', req.body);
+    if (!req.body.motDePasse) {
     return res.status(400).json({ message: 'id required.' });
   }
   res.status(201).json({ message: 'User created successfully' });
