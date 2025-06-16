@@ -84,17 +84,11 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la route /utilisateurs
+        - Utilisateurs
       description: Retourne la liste des utilisateurs avec l'id, le nom, le prenom, le login, la ville, le code postal et la date de création
       responses:
-        200:
-          description: Liste des utilisateurs
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+        '200':
+          $ref: '#/components/schemas/Success'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -103,6 +97,8 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -130,14 +126,8 @@ paths:
                   format: password
                   
       responses:
-        201:
-          description: Utilisateur créé
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+        '201':
+          $ref: '#/components/responses/Created'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -329,10 +319,12 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Requetes pour la sous-route /utilisateurs/{idUtilisateur}/comptes
+        - Comptes
       description: Récupère tous les comptes liées à cet utilisateur
       
       responses:
+        '200':
+          $ref: '#/components/responses/Success'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -341,6 +333,8 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -370,14 +364,10 @@ paths:
                 name:
                   type: string
       responses:
-        201:
-          description: Committee created.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Committee'
+        '200':
+          $ref: '#/components/responses/Success'
+        '201':
+          $ref: '#/components/responses/Created'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -386,10 +376,11 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '409':
-          $ref: '#/components/responses/ConflictError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+
 
   /utilisateurs/{idUtilisateur}/comptes/{idCompte}:
     # request get for the path /utilisateurs/{idUtilisateur}/comptes/{idCompte}
