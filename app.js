@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const apiRouter = require('./routes');
 require('./bdd_config');
-
 const app = express();
 
 // Middleware
