@@ -4,7 +4,7 @@ info:
   title: Documentation API du projet money
   description: Décrit la structure de l'API du projet money de l'équipe NALT
 servers:
-    - url: http://localhost:3000/api/v1/
+    - url: http://localhost:3000/api
       description: Serveur de développement de l'API
 paths:
   # route /auth
