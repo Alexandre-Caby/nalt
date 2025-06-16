@@ -1,41 +1,41 @@
 const express = require('express');
-const router = express.Router({ mergeParams: true });
+const router = express.Router();
 
-// GET /api/utilisateurs/:idUtilisateur/virements - Get all transfers
+// GET /api/virements - Get all transfers for authenticated user
 router.get('/', (req, res) => {
-  res.status(200).json({ message: `Get all transfers for user ${req.params.idUtilisateur}` });
+  res.status(200).json({ message: `Get all transfers for user ${req.userId}` });
 });
 
-// POST /api/utilisateurs/:idUtilisateur/virements - Create a new transfer
+// POST /api/virements - Create a new transfer for authenticated user
 router.post('/', (req, res) => {
-  res.status(201).json({ message: `Create new transfer for user ${req.params.idUtilisateur}` });
+  res.status(201).json({ message: `Create new transfer for user ${req.userId}` });
 });
 
-// GET /api/utilisateurs/:idUtilisateur/virements/:idVirement - Get transfer by ID
+// GET /api/virements/:idVirement - Get transfer by ID
 router.get('/:idVirement', (req, res) => {
   res.status(200).json({ 
-    message: `Get transfer ${req.params.idVirement} for user ${req.params.idUtilisateur}` 
+    message: `Get transfer ${req.params.idVirement} for user ${req.userId}` 
   });
 });
 
-// PUT /api/utilisateurs/:idUtilisateur/virements/:idVirement - Update transfer
+// PUT /api/virements/:idVirement - Update transfer
 router.put('/:idVirement', (req, res) => {
   res.status(200).json({ 
-    message: `Update transfer ${req.params.idVirement} for user ${req.params.idUtilisateur}` 
+    message: `Update transfer ${req.params.idVirement} for user ${req.userId}` 
   });
 });
 
-// PATCH /api/utilisateurs/:idUtilisateur/virements/:idVirement - Partially update transfer
+// PATCH /api/virements/:idVirement - Partially update transfer
 router.patch('/:idVirement', (req, res) => {
   res.status(200).json({ 
-    message: `Partially update transfer ${req.params.idVirement} for user ${req.params.idUtilisateur}` 
+    message: `Partially update transfer ${req.params.idVirement} for user ${req.userId}` 
   });
 });
 
-// DELETE /api/utilisateurs/:idUtilisateur/virements/:idVirement - Delete transfer
+// DELETE /api/virements/:idVirement - Delete transfer
 router.delete('/:idVirement', (req, res) => {
   res.status(200).json({ 
-    message: `Delete transfer ${req.params.idVirement} for user ${req.params.idUtilisateur}` 
+    message: `Delete transfer ${req.params.idVirement} for user ${req.userId}` 
   });
 });
 

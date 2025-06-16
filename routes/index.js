@@ -4,11 +4,12 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const path = require('path');
 const cors = require('cors');
+const { authenticateToken } = require('../api-management/utils.js');
 
 // Load Swagger documentation from absolute path
-const swaggerSpec = YAML.load(path.join(__dirname, '../api-documentation.yaml'));
+const swaggerSpec = YAML.load(path.join(__dirname, '../api-management/api-documentation.yaml'));
 
-// Enable CORS for all routes
+// Enable CORS
 router.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
@@ -17,16 +18,29 @@ router.use(cors({
 
 // Import routers
 const authRouter = require('./auth');
-const usersRouter = require('./users');
+const usersRouter = require('./utilisateurs.js');
 const categoriesRouter = require('./categories');
 const vuesRouter = require('./vues');
+const comptesRouter = require('./comptes');
+const tiersRouter = require('./tiers');
+const mouvementsRouter = require('./mouvements');
+const virementsRouter = require('./virements');
 
-// Mount sub-routers
+// Public routes (no authentication required)
 router.use('/authenticate', authRouter);
-router.use('/utilisateurs', usersRouter);
-router.use('/categories', categoriesRouter);
-router.use('/v_categories', vuesRouter.categories);
-router.use('/v_mouvements', vuesRouter.mouvements);
+
+// Protected routes (authentication required)
+// Users routes
+router.use('/utilisateurs', authenticateToken, usersRouter);
+
+// Simplified routes without user ID in URL
+router.use('/comptes', authenticateToken, comptesRouter);
+router.use('/tiers', authenticateToken, tiersRouter);
+router.use('/mouvements', authenticateToken, mouvementsRouter);
+router.use('/virements', authenticateToken, virementsRouter);
+router.use('/categories', authenticateToken, categoriesRouter);
+router.use('/v_categories', authenticateToken, vuesRouter.categories);
+router.use('/v_mouvements', authenticateToken, vuesRouter.mouvements);
 
 // Home route
 router.get('/', function(req, res) {
@@ -37,19 +51,10 @@ router.get('/', function(req, res) {
   });
 });
 
-// Swagger documentation route
-router.use('/api-docs', 
-  swaggerUi.serve, 
-  swaggerUi.setup(swaggerSpec, {
-    explorer: true,
-    swaggerOptions: {
-      docExpansion: 'none',
-      filter: true,
-      showRequestHeaders: true
-    },
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: "Banking API Documentation"
-  })
-);
+// API docs
+router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  explorer: true,
+  customSiteTitle: "Banking API Documentation"
+}));
 
 module.exports = router;

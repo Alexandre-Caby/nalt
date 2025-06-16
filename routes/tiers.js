@@ -1,41 +1,41 @@
 const express = require('express');
-const router = express.Router({ mergeParams: true });
+const router = express.Router();
 
-// GET /api/utilisateurs/:idUtilisateur/tiers - Get all third parties
+// GET /api/tiers - Get all third parties for authenticated user
 router.get('/', (req, res) => {
-  res.status(200).json({ message: `Get all third parties for user ${req.params.idUtilisateur}` });
+  res.status(200).json({ message: `Get all third parties for user ${req.userId}` });
 });
 
-// POST /api/utilisateurs/:idUtilisateur/tiers - Create a new third party
+// POST /api/tiers - Create a new third party for authenticated user
 router.post('/', (req, res) => {
-  res.status(201).json({ message: `Create new third party for user ${req.params.idUtilisateur}` });
+  res.status(201).json({ message: `Create new third party for user ${req.userId}` });
 });
 
-// GET /api/utilisateurs/:idUtilisateur/tiers/:idTiers - Get third party by ID
+// GET /api/tiers/:idTiers - Get third party by ID
 router.get('/:idTiers', (req, res) => {
   res.status(200).json({ 
-    message: `Get third party ${req.params.idTiers} for user ${req.params.idUtilisateur}` 
+    message: `Get third party ${req.params.idTiers} for user ${req.userId}` 
   });
 });
 
-// PUT /api/utilisateurs/:idUtilisateur/tiers/:idTiers - Update third party
+// PUT /api/tiers/:idTiers - Update third party
 router.put('/:idTiers', (req, res) => {
   res.status(200).json({ 
-    message: `Update third party ${req.params.idTiers} for user ${req.params.idUtilisateur}` 
+    message: `Update third party ${req.params.idTiers} for user ${req.userId}` 
   });
 });
 
-// PATCH /api/utilisateurs/:idUtilisateur/tiers/:idTiers - Partially update third party
+// PATCH /api/tiers/:idTiers - Partially update third party
 router.patch('/:idTiers', (req, res) => {
   res.status(200).json({ 
-    message: `Partially update third party ${req.params.idTiers} for user ${req.params.idUtilisateur}` 
+    message: `Partially update third party ${req.params.idTiers} for user ${req.userId}` 
   });
 });
 
-// DELETE /api/utilisateurs/:idUtilisateur/tiers/:idTiers - Delete third party
+// DELETE /api/tiers/:idTiers - Delete third party
 router.delete('/:idTiers', (req, res) => {
   res.status(200).json({ 
-    message: `Delete third party ${req.params.idTiers} for user ${req.params.idUtilisateur}` 
+    message: `Delete third party ${req.params.idTiers} for user ${req.userId}` 
   });
 });
 

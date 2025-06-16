@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { generateTokens, verifyPassword, authenticateToken } = require('../utils.js');
+const { generateTokens, verifyPassword, authenticateToken } = require('../api-management/utils.js');
 const bcrypt = require('bcrypt');
+const { findUserByLogin } = require('../controllers/utilisateurs.js'); // Import the function to find user by login
 
 /**
  * POST /api/authenticate - User login endpoint
  * @route POST /api/authenticate
  * @group Authentication - Operations for user authentication
- * @param {string} name.body.required - User's name or username
+ * @param {string} login.body.required - User's login or userlogin
  * @param {string} password.body.required - User's password
  * @returns {object} 200 - Authentication successful with token and user info
  * @returns {object} 401 - Authentication failed
@@ -15,18 +16,20 @@ const bcrypt = require('bcrypt');
  */
 router.post('/', async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const { login, password } = req.body;
     
     // Validate request
-    if (!name || !password) {
+    if (!login || !password) {
       return res.status(400).json({ 
         message: 'Missing required fields',
-        details: 'Both name and password are required'
+        details: 'Both login and password are required'
       });
     }
     
-    // Find the user by name
-    const user = await findUserByName(name);
+    // Find the user by login
+    // console.log('Searching for user:', login);
+    const user = await findUserByLogin(login);
+    // console.log('User in db:', user);
     
     if (!user) {
       return res.status(401).json({ 
@@ -36,7 +39,7 @@ router.post('/', async (req, res) => {
     }
     
     // Verify password
-    const isPasswordValid = await verifyPassword(password, user.password);
+    const isPasswordValid = await verifyPassword(password, user.motDePasse);
     if (!isPasswordValid) {
       return res.status(401).json({ 
         message: 'Authentication failed',
@@ -54,9 +57,9 @@ router.post('/', async (req, res) => {
       expiresIn: 86400, // 24 hours in seconds
       user: {
         id: user.id,
-        name: user.name,
+        login: user.login,
         ville: user.ville,
-        postalCode: user.postalCode,
+        postalCode: user.codePostal,
       }
     });
   } catch (error) {
@@ -80,23 +83,5 @@ router.get('/verify', authenticateToken, (req, res) => {
     userId: req.userId
   });
 });
-
-/**
- * Find user by name in the database
- * @param {string} name - User's name to search for
- * @returns {Promise<Object|null>} User object or null if not found
- */
-async function findUserByName(name) {
-  // TODO: Replace with actual database query
-  // This is just a mock example for testing
-  if (name === 'test') {
-    return {
-      id: 1,
-      name: 'test',
-      password: await bcrypt.hash('password', 10)
-    };
-  }
-  return null;
-}
 
 module.exports = router;

@@ -10,7 +10,7 @@ const path = require('path');
  */
 function getSecretKey() {
   // Define the secretPath variable first
-  const secretPath = path.join(__dirname, 'secret.key');
+  const secretPath = path.join(__dirname, '../secret.key');
   
   try {
     // Check if we already have a secret key file
@@ -57,14 +57,13 @@ const JWT_SECRET = getSecretKey();
  * @returns {string} JWT token valid for 24 hours
  */
 const generateTokens = (user) => {
-  // Add timestamp information
-  const now = Math.floor(Date.now() / 1000);
-  const expiresAt = now + (24 * 60 * 60); // 24 hours in seconds
-  
   const token = jwt.sign(
-    {userId: user.id},
-    JWT_SECRET,
-    { expiresIn: '24h' }
+    { 
+      userId: user.idUtilisateur,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60)
+    },
+    JWT_SECRET
   );
   
   return token;
@@ -87,15 +86,25 @@ const authenticateToken = (req, res, next) => {
   
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+    
+    // Set the userId on the request object
     req.userId = decoded.userId;
-    return next();
+    
+    if (!req.userId) {
+      return res.status(401).json({ 
+        message: 'Invalid token format', 
+        details: 'Token does not contain user ID'
+      });
+    }
+    
+    next();
   } catch (error) {
     return res.status(403).json({ 
       message: 'Invalid or expired token',
       error: error.message 
     });
-    }
-}
+  }
+};
 
 /**
  * Verify password against hashed version

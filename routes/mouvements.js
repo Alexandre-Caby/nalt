@@ -1,41 +1,42 @@
 const express = require('express');
-const router = express.Router({ mergeParams: true });
+const router = express.Router();
 
-// GET /api/utilisateurs/:idUtilisateur/mouvements - Get all movements
+// GET /api/mouvements - Get all movements for the authenticated user
 router.get('/', (req, res) => {
-  res.status(200).json({ message: `Get all movements for user ${req.params.idUtilisateur}` });
+  // req.userId comes from the authenticateToken middleware
+  res.status(200).json({ message: `Get all movements for user ${req.userId}` });
 });
 
-// POST /api/utilisateurs/:idUtilisateur/mouvements - Create a new movement
+// POST /api/mouvements - Create a new movement for the authenticated user
 router.post('/', (req, res) => {
-  res.status(201).json({ message: `Create new movement for user ${req.params.idUtilisateur}` });
+  res.status(201).json({ message: `Create new movement for user ${req.userId}` });
 });
 
-// GET /api/utilisateurs/:idUtilisateur/mouvements/:idMouvement - Get movement by ID
+// GET /api/mouvements/:idMouvement - Get movement by ID for the authenticated user
 router.get('/:idMouvement', (req, res) => {
   res.status(200).json({ 
-    message: `Get movement ${req.params.idMouvement} for user ${req.params.idUtilisateur}` 
+    message: `Get movement ${req.params.idMouvement} for user ${req.userId}` 
   });
 });
 
-// PUT /api/utilisateurs/:idUtilisateur/mouvements/:idMouvement - Update movement
+// PUT /api/mouvements/:idMouvement - Update movement for the authenticated user
 router.put('/:idMouvement', (req, res) => {
   res.status(200).json({ 
-    message: `Update movement ${req.params.idMouvement} for user ${req.params.idUtilisateur}` 
+    message: `Update movement ${req.params.idMouvement} for user ${req.userId}` 
   });
 });
 
-// PATCH /api/utilisateurs/:idUtilisateur/mouvements/:idMouvement - Partially update movement
+// PATCH /api/mouvements/:idMouvement - Partially update movement
 router.patch('/:idMouvement', (req, res) => {
   res.status(200).json({ 
-    message: `Partially update movement ${req.params.idMouvement} for user ${req.params.idUtilisateur}` 
+    message: `Partially update movement ${req.params.idMouvement} for user ${req.userId}` 
   });
 });
 
-// DELETE /api/utilisateurs/:idUtilisateur/mouvements/:idMouvement - Delete movement
+// DELETE /api/mouvements/:idMouvement - Delete movement
 router.delete('/:idMouvement', (req, res) => {
   res.status(200).json({ 
-    message: `Delete movement ${req.params.idMouvement} for user ${req.params.idUtilisateur}` 
+    message: `Delete movement ${req.params.idMouvement} for user ${req.userId}` 
   });
 });
 

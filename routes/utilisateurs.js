@@ -1,14 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-// Import sub-routers
-const comptesRouter = require('./comptes');
-const tiersRouter = require('./tiers');
-const mouvementsRouter = require('./mouvements');
-const virementsRouter = require('./virements');
-
 // GET /api/utilisateurs - Get all users
-router.get('/', (req, res) => {
+router.get('/', validate(schemas.user), (req, res) => {
+  if (!req.user || !req.user.isAdmin) {
+    return res.status(403).json({ message: 'Access denied. Admins only.' });
+  }
   res.status(200).json({ message: 'Get all users' });
 });
 
@@ -36,11 +33,5 @@ router.patch('/:idUtilisateur', (req, res) => {
 router.delete('/:idUtilisateur', (req, res) => {
   res.status(200).json({ message: `Delete user with ID ${req.params.idUtilisateur}` });
 });
-
-// Mount sub-routers
-router.use('/:idUtilisateur/comptes', comptesRouter);
-router.use('/:idUtilisateur/tiers', tiersRouter);
-router.use('/:idUtilisateur/mouvements', mouvementsRouter);
-router.use('/:idUtilisateur/virements', virementsRouter);
 
 module.exports = router;
