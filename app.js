@@ -13,8 +13,18 @@ app.use(express.urlencoded({ extended: false }));
 // Mount all API routes under /api
 app.use('/api', apiRouter);
 
-// Simple error handler
+// Error handling for Swagger UI
 app.use((err, req, res, next) => {
+  // Check if the error is a YAML parsing error
+  if (err.message && err.message.includes('YAML')) {
+    console.error('Swagger YAML Error:', err);
+    return res.status(500).json({ 
+      error: 'API Documentation Error', 
+      details: 'Error parsing the API documentation file.'
+    });
+  }
+  
+  // Generic error handler
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
