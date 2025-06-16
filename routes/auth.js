@@ -9,17 +9,18 @@ const { findUserByLogin } = require('../controllers/utilisateurs.js'); // Import
  * @route POST /api/authenticate
  * @group Authentication - Operations for user authentication
  * @param {string} login.body.required - User's login or userlogin
- * @param {string} password.body.required - User's password
+ * @param {string} motDePasse.body.required - User's password
  * @returns {object} 200 - Authentication successful with token and user info
  * @returns {object} 401 - Authentication failed
  * @returns {object} 500 - Server error
  */
 router.post('/', async (req, res) => {
   try {
-    const { login, password } = req.body;
+    const { login, motDePasse } = req.body;
+    console.log('Received login request:', { login, motDePasse });
     
     // Validate request
-    if (!login || !password) {
+    if (!login || !motDePasse) {
       return res.status(400).json({ 
         message: 'Missing required fields',
         details: 'Both login and password are required'
@@ -39,7 +40,7 @@ router.post('/', async (req, res) => {
     }
     
     // Verify password
-    const isPasswordValid = await verifyPassword(password, user.motDePasse);
+    const isPasswordValid = await verifyPassword(motDePasse, user.motDePasse);
     if (!isPasswordValid) {
       return res.status(401).json({ 
         message: 'Authentication failed',
