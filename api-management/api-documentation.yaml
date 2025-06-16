@@ -775,8 +775,8 @@ paths:
           required: true
           schema:
             type: integer
-              content:
-          application/json:
+          content:
+            application/json:
             schema:
               type: object
               properties:
@@ -1518,30 +1518,6 @@ components:
       properties:
         token:
           type: string
-
-    # schema for the path/users
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        card:
-          type: array
-          items:
-            $ref: '#/components/schemas/Card'
-    
      # schema for the errors responses
     Error:
       description: Error response
