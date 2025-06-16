@@ -17,7 +17,6 @@ const { findUserByLogin } = require('../controllers/utilisateurs.js'); // Import
 router.post('/', async (req, res) => {
   try {
     const { login, motDePasse } = req.body;
-    console.log('Received login request:', { login, motDePasse });
     
     // Validate request
     if (!login || !motDePasse) {
