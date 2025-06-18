@@ -4,7 +4,7 @@ const connection = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'money_api_rest',
+    database: 'money_api',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
