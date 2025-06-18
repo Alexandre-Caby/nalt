@@ -63,7 +63,7 @@ async function createTiersByUser(tiersData) {
 
 /**
  * Find tiers by id
- * @param {number} idTiers - User's id to search for
+ * @param {number} idTiers - Tiers id to search for
  * @returns {Promise<Object|null>} Tiers object or null if not found
  */
 async function getTiersById(idTiers) {
@@ -131,7 +131,7 @@ async function deleteTiers(idTiers) {
         await db.query('DELETE FROM tiers WHERE idTiers = ?', [idTiers]);
 
         // category name
-        return { message: 'Category deleted successfully', idTiers: tiers.idTiers };
+        return { message: 'Virement deleted successfully', idTiers: tiers.idTiers };
     } catch (error) {
         console.error('Database delete error:', error);
         throw new Error('Failed to delete tiers: ' + error.message);

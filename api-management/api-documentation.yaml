@@ -934,21 +934,21 @@ paths:
               properties:
                 nomTiers:
                   type: string
-        responses:
-          '200':
-            $ref: '#/components/responses/Success'
-          '400':
-            $ref: '#/components/responses/BadRequestError'
-          '401':
-            $ref: '#/components/responses/UnauthorizedError'
-          '403':
-            $ref: '#/components/responses/ForbiddenError'
-          '404':
-            $ref: '#/components/responses/NotFoundError'
-          '406':
-            $ref: '#/components/responses/NotAcceptableError'
-          '500':
-            $ref: '#/components/responses/InternalServerError'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     
     # request delete for the path /tiers/{idTiers}
     delete:
@@ -1028,16 +1028,17 @@ paths:
             schema:
               type: object
               properties:
-                IdCategorie:
+                idCategorie:
                   type: integer
-                IdCompteDebit:
+                idCompteDebit:
                   type: integer
-                IdCompteCredit:
+                idCompteCredit:
                   type: integer
                 montant:
                   type: number
                 dateVirement:
                   type: string
+                  format: date
       responses:
         '200':
           $ref: '#/components/responses/Success'
@@ -1089,14 +1090,14 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-    # request put for the path /virements/{idVirement}
-    put:
+    # request patch for the path /virements/{idVirement}
+    patch:
       summary: Met à jour un virement.
       security:
         - bearerAuth: []
       tags:
         - Virements
-      description: Met à jour un virement avec les champs IdCategorie, IdCompteDebit, IdCompteCredit, montant, dateVirement, dateHeureCreation et dateHeureMAJ.
+      description: Met à jour partiellement un virement avec les champs IdCategorie, IdCompteDebit, IdCompteCredit, montant, dateVirement, dateHeureCreation et dateHeureMAJ.
       parameters: # parameters for the query
         - name: idVirement
           description: Id du virement.
@@ -1111,25 +1112,26 @@ paths:
             schema:
               type: object
               properties:
-                montant:
+                idCategorie:
                   type: number
                 dateVirement:
                   type: string
-        responses:
-          '200':
-            $ref: '#/components/responses/Success'
-          '400':
-            $ref: '#/components/responses/BadRequestError'
-          '401':
-            $ref: '#/components/responses/UnauthorizedError'
-          '403':
-            $ref: '#/components/responses/ForbiddenError'
-          '404':
-            $ref: '#/components/responses/NotFoundError'
-          '406':
-            $ref: '#/components/responses/NotAcceptableError'
-          '500':
-            $ref: '#/components/responses/InternalServerError'
+                  format: date
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     # request delete for the route /virements/{idVirement}
     delete:
