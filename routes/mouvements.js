@@ -16,7 +16,18 @@ router.get('/', async(req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { typeMouvement, montant, dateMouvement, idCompte, idTiers, idCategorie, idSousCategorie,idVirement } = req.body;
-
+    if (montant <= 0) {
+      return res.status(400).json({
+        message: 'Validation error',
+        details: 'montant must be positive'
+      });
+    }
+    if (dateMouvement && new Date(dateMouvement) < new Date()) {
+      return res.status(400).json({
+        message: 'Validation error',
+        details: 'dateMouvement can\'t be in the past'
+      });
+    }
     // Validation complète
     const errors = [];
     if (!typeMouvement) errors.push('typeMouvement is required');
