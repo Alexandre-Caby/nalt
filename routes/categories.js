@@ -19,10 +19,7 @@ const {
 router.get('/', async (req, res) => {
   try {
     const categories = await getAllCategories();
-    res.status(200).json({ 
-      message: 'Categories retrieved successfully',
-      data: categories 
-    });
+    res.status(200).json(categories);
   } catch (error) {
     console.error('Error getting categories:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -43,10 +40,7 @@ router.post('/', async (req, res) => {
     }
     
     const newCategory = await createCategory({ nomCategorie });
-    res.status(201).json({ 
-      message: 'Category created successfully',
-      data: newCategory
-    });
+    res.status(201).json(newCategory);
   } catch (error) {
     console.error('Error creating category:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -66,10 +60,7 @@ router.get('/:idCategorie', async (req, res) => {
       return res.status(404).json({ message: 'Category not found' });
     }
     
-    res.status(200).json({ 
-      message: 'Category retrieved successfully',
-      data: category 
-    });
+    res.status(200).json(category);
   } catch (error) {
     console.error('Error getting category:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -95,10 +86,7 @@ router.put('/:idCategorie', async (req, res) => {
     }
     
     const updatedCategory = await updateCategory(idCategorie, { nomCategorie });
-    res.status(200).json({ 
-      message: 'Category updated successfully',
-      data: updatedCategory 
-    });
+    res.status(200).json(updatedCategory);
   } catch (error) {
     console.error('Error updating category:', error);
     if (error.message.includes('not found')) {
@@ -142,10 +130,7 @@ router.get('/:idCategorie/sous-categories', async (req, res) => {
     }
     
     const subcategories = await getSubcategoriesByCategoryId(idCategorie);
-    res.status(200).json({ 
-      message: 'Subcategories retrieved successfully',
-      data: subcategories 
-    });
+    res.status(200).json(subcategories);
   } catch (error) {
     console.error('Error getting subcategories:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -181,10 +166,7 @@ router.get('/:idCategorie/sous-categories/:idSousCategorie', async (req, res) =>
       });
     }
     
-    res.status(200).json({ 
-      message: 'Subcategory retrieved successfully',
-      data: subcategory 
-    });
+    res.status(200).json(subcategory);
   } catch (error) {
     console.error('Error getting subcategory:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -214,10 +196,7 @@ router.post('/:idCategorie/sous-categories', async (req, res) => {
       idCategorie 
     });
     
-    res.status(201).json({ 
-      message: 'Subcategory created successfully',
-      data: newSubcategory 
-    });
+    res.status(201).json(newSubcategory);
   } catch (error) {
     console.error('Error creating subcategory:', error);
     if (error.message.includes('not found')) {
@@ -260,10 +239,7 @@ router.put('/:idCategorie/sous-categories/:idSousCategorie', async (req, res) =>
     }
     
     const updatedSubcategory = await updateSubcategory(idSousCategorie, { nomSousCategorie });
-    res.status(200).json({ 
-      message: 'Subcategory updated successfully',
-      data: updatedSubcategory 
-    });
+    res.status(200).json(updatedSubcategory);
   } catch (error) {
     console.error('Error updating subcategory:', error);
     if (error.message.includes('not found')) {
@@ -296,7 +272,7 @@ router.delete('/:idCategorie/sous-categories/:idSousCategorie', async (req, res)
     }
     
     const result = await deleteSubcategory(idSousCategorie);
-    res.status(200).json(result);
+    res.status(204).json(result);
   } catch (error) {
     console.error('Error deleting subcategory:', error);
     if (error.message.includes('not found')) {

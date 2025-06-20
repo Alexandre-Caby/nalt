@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
   const userId = req.userId; // récupération de l'ID utilisateur connecté
   try
   {
-    if( !userId)
+    if(!userId)
       return res.status(401).json({ message: 'Unauthorized' });
     const { descriptionCompte, nomBanque, soldeInitial} = req.body;
     if(!descriptionCompte)
@@ -127,16 +127,15 @@ router.patch('/:idCompte', (req, res) => {
     if (!userId) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
-    const { descriptionCompte, nomBanque, soldeInitial } = req.body;
-    if (!descriptionCompte && !nomBanque && soldeInitial === undefined) {
-      return res.status(400).json({ message: 'au minimum, l\'un des trois champs doit être definit : descriptionCompte, nomBanque, soldeInitial ' });
+    const { descriptionCompte, nomBanque } = req.body;
+    if (!descriptionCompte && !nomBanque) {
+      return res.status(400).json({ message: 'au minimum, descriptionCompte ou nomBanque doit être defini' });
     }
 
     const updatedCompte = patchAccount(idCompte, {
       descriptionCompte,
       nomBanque,
       IdUtilisateur: userId,
-      soldeInitial
     });
 
     res.status(200).json(updatedCompte);
@@ -163,7 +162,7 @@ router.delete('/:idCompte', (req, res) => {
     if (!CompteSuprime) {
       return res.status(404).json({ message: 'Compte non trouvé' });
     }
-    res.status(200).json({ CompteSuprime});
+    res.status(204).json({ CompteSuprime});
   } catch (error) {
     console.error('Error deleting account:', error);
     if (error.message.includes('Compte non trouvé')) {

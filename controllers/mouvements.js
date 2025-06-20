@@ -109,7 +109,8 @@ async function patchMouvement(idMouvement, mouvementData) {
 
     // Ajoute la date de mise à jour si tu as un champ prévu
     // updateFields.push('dateHeureMAJ = NOW()');
-
+    //On ajoute la dateHeureMAJ
+    updateFields.push('dateHeureMAJ = NOW()');
     values.push(idMouvement);
 
     const query = `UPDATE mouvement SET ${updateFields.join(', ')} WHERE idMouvement = ?`;

@@ -52,6 +52,9 @@ router.get('/:idTiers', async(req, res) => {
     }
 
     const tiers = await getTiersById(idTiers);
+    if (!tiers) {
+      return res.status(404).json({ message: 'Tiers not found' });
+    }
     res.status(200).json(tiers);
   } catch (error) {
     console.error('Error getting tiers:', error);
@@ -78,10 +81,7 @@ router.put('/:idTiers', async(req, res) => {
     }
 
     const updatedTiers = await updateTiers(idTiers, { nomTiers });
-    res.status(200).json({
-      message: 'Tiers updated successfully',
-      data: updatedTiers
-    });
+    res.status(200).json(updatedTiers);
   } catch (error) {
     console.error('Error updating tiers:', error);
     if (error.message.includes('not found')) {
@@ -100,7 +100,7 @@ router.delete('/:idTiers', async(req, res) => {
     }
 
     const result = await deleteTiers(idTiers);
-    res.status(200).json(result);
+    res.status(204).json(result);
   } catch (error) {
     console.error('Error deleting tiers:', error);
     if (error.message.includes('not found')) {

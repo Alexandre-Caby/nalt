@@ -114,10 +114,10 @@ async function getUserById(idUtilisateur) {
     // Match field names from the YAML documentation
     const [rows] = await db.query(`
       SELECT 
-        idUtilisateur as id, 
+        idUtilisateur, 
         login, 
-        nomUtilisateur as nom, 
-        prenomUtilisateur as prenom, 
+        nomUtilisateur, 
+        prenomUtilisateur, 
         ville, 
         codePostal
       FROM utilisateur 

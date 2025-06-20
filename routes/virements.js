@@ -36,7 +36,10 @@ router.post('/', async(req, res) => {
         details: 'montant must be positive'
       });
     }
-    if (dateVirement && new Date(dateVirement) < new Date()) {
+    const date = new Date(); // maintenant
+    date.setHours(0, 0, 0, 0); // aujourd'hui à 00:00:00
+
+    if (dateVirement && new Date(dateVirement) < date) {
       return res.status(400).json({
         message: 'Validation error',
         details: 'dateVirement can\'t be in the past'
@@ -64,6 +67,9 @@ router.get('/:idVirement', async(req, res) => {
     }
 
     const virement = await getVirementById(idVirement);
+    if (!virement) {
+      return res.status(404).json({ message: 'Virement not found' });
+    }
     res.status(200).json(virement);
   } catch (error) {
     console.error('Error getting virement:', error);
@@ -88,7 +94,11 @@ router.patch('/:idVirement', async(req, res) => {
         details: 'dateVirement or idCategorie is required'
       });
     }
-    if (dateVirement && new Date(dateVirement) < new Date()) {
+
+    const date = new Date(); // maintenant
+    date.setHours(0, 0, 0, 0); // aujourd'hui à 00:00:00
+
+    if (dateVirement && new Date(dateVirement) < date) {
       return res.status(400).json({
         message: 'Validation error',
         details: 'dateVirement can\'t be in the past'
@@ -96,10 +106,7 @@ router.patch('/:idVirement', async(req, res) => {
     }
 
     const updatedVirement = await patchVirement(idVirement, { dateVirement, idCategorie });
-    res.status(200).json({
-      message: 'Virement updated successfully',
-      data: updatedVirement
-    });
+    res.status(200).json(updatedVirement);
   } catch (error) {
     console.error('Error updating virement:', error);
     if (error.message.includes('not found')) {
@@ -118,7 +125,7 @@ router.delete('/:idVirement', async(req, res) => {
     }
 
     const result = await deleteVirement(idVirement);
-    res.status(200).json(result);
+    res.status(204).json(result);
   } catch (error) {
     console.error('Error deleting virement:', error);
     if (error.message.includes('not found')) {
