@@ -105,7 +105,7 @@ router.delete('/:idCategorie', async (req, res) => {
     }
     
     const result = await deleteCategory(idCategorie);
-    res.status(200).json(result);
+    res.status(204).json(result);
   } catch (error) {
     console.error('Error deleting category:', error);
     if (error.message.includes('not found')) {
