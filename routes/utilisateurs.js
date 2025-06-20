@@ -61,12 +61,12 @@ router.post('/', async (req, res) => {
 router.get('/:idUtilisateur', async (req, res) => {
   try {
     // Validate ID parameter
-    const idUtilisateur = parseInt(req.params.idUtilisateur);
-    if (isNaN(idUtilisateur)) {
+  const userId = req.userId; // récupération de l'ID utilisateur connecté
+    if (isNaN(userId)) {
       return res.status(400).json({ message: 'Invalid user ID' });
     }
     
-    const user = await getUserById(idUtilisateur);
+    const user = await getUserById(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
