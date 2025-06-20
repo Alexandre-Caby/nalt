@@ -80,11 +80,7 @@ async function getAccountById(idUtilisateur, idCompte)
             WHERE idUtilisateur = ? AND idCompte = ?
         `, [idUtilisateur, idCompte]);
 
-        if (rows.length === 0) {
-            throw new Error('Compte non trouvé');
-        }
-
-        return rows[0]; // Retourne le compte trouvé
+        return rows.length > 0 ? rows[0] : null; // Retourne le compte trouvé
     } catch (error) {
         console.error('Erreur lors de la récupération du compte:', error);
         throw new Error('Erreur lors de la récupération du compte');
@@ -127,17 +123,11 @@ async function patchAccount(idCompte, compteData) {
             fieldsToUpdate.push('nomBanque = ?');
             values.push(compteData.nomBanque);
         }
-        if (compteData.soldeInitial !== undefined) {
-            fieldsToUpdate.push('soldeInitial = ?');
-            values.push(compteData.soldeInitial);
-        }
-        if (compteData.dernierSolde !== undefined) {
-            fieldsToUpdate.push('dernierSolde = ?');
-            values.push(compteData.dernierSolde);
-        }
         if (fieldsToUpdate.length === 0) {
             throw new Error('Aucun champ à mettre à jour');
         }
+        //On ajoute la dateHeureMAJ
+        fieldsToUpdate.push('dateHeureMAJ = NOW()');
         //On ajoute l'ID du compte à la fin des valeurs
         values.push(idCompte);
 

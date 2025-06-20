@@ -156,7 +156,7 @@ router.delete('/:idUtilisateur', async (req, res) => {
   try {
     // Always use the current user's ID from the token
     const result = await deleteUser(req.userId);
-    res.status(200).json(result);
+    res.status(204).json(result);
   } catch (error) {
     console.error('Error deleting user:', error);
     res.status(500).json({ message: 'Server error', error: error.message });

@@ -22,7 +22,11 @@ router.post('/', async (req, res) => {
         details: 'montant must be positive'
       });
     }
-    if (dateMouvement && new Date(dateMouvement) < new Date()) {
+
+    const date = new Date(); // maintenant
+    date.setHours(0, 0, 0, 0); // aujourd'hui à 00:00:00
+
+    if (dateMouvement && new Date(dateMouvement) < date) {
       return res.status(400).json({
         message: 'Validation error',
         details: 'dateMouvement can\'t be in the past'
@@ -57,10 +61,7 @@ router.post('/', async (req, res) => {
     };
 
     const newMouvement = await createMouvement(mouvementData);
-    res.status(201).json({
-      message: 'Mouvement created successfully',
-      data: newMouvement
-    });
+    res.status(201).json(newMouvement);
   } catch (error) {
     console.error('Error creating mouvement:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -91,6 +92,16 @@ router.patch('/:idMouvement', async (req, res) => {
 
     const {  dateMouvement, idCategorie, idSousCategorie } = req.body;
 
+    const date = new Date(); // maintenant
+    date.setHours(0, 0, 0, 0); // aujourd'hui à 00:00:00
+
+    if (dateMouvement && new Date(dateMouvement) < date)  {
+      return res.status(400).json({
+        message: 'Validation error',
+        details: 'dateMouvement can\'t be in the past'
+      });
+    }
+
     // Ici, on ne valide que si les champs sont présents (partiel)
     const mouvementData = {};
     if (dateMouvement !== undefined) mouvementData.dateMouvement = dateMouvement;
@@ -102,10 +113,7 @@ router.patch('/:idMouvement', async (req, res) => {
     }
 
     const updatedMouvement = await patchMouvement(idMouvement, mouvementData);
-    res.status(200).json({
-      message: 'Mouvement updated successfully',
-      data: updatedMouvement
-    });
+    res.status(200).json(updatedMouvement);
   } catch (error) {
     console.error('Error updating Mouvement:', error);
     if (error.message && error.message.includes('not found')) {
@@ -120,7 +128,7 @@ router.delete('/:idMouvement', async(req, res) => {
     try {
     // Always use the current user's ID from the token
     const result = await deleteMouvement(req.params.idMouvement);
-    res.status(200).json(result);
+    res.status(204).json(result);
   } catch (error) {
     console.error('Error deleting mouvement:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
