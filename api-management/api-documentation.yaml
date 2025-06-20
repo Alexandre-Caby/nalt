@@ -511,7 +511,6 @@ paths:
       tags:
         - Mouvements
       description: Récupère tous les mouvements liées à cet utilisateur.
-      parameters: # parameters for the query
       responses:
         '200':
           $ref: '#/components/responses/Success'
@@ -535,8 +534,7 @@ paths:
         - bearerAuth: []
       tags:
         - Mouvements
-      description: Crée un nouveau mouvement pour un utilisateur avec les champs idCompte, IdTiers, IdCategorie, idSousCategorie, typeMouvement et le montant
-      parameters: # parameters for the query
+      description: Crée un nouveau mouvement pour un utilisateur avec les champs idCompte, IdTiers, IdCategorie, idSousCategorie, typeMouvement, idVirement et le montant
       requestBody: # specification of the request body
         required: true
         content:
@@ -549,7 +547,8 @@ paths:
                 montant:
                   type: number
                 dateMouvement:
-                  type: date
+                  type: string
+                  format: date
                 idCompte:
                   type: integer
                 idTiers:
@@ -557,6 +556,8 @@ paths:
                 idCategorie:
                   type: integer
                 idSousCategorie:
+                  type: integer
+                idVirement:
                   type: integer
       responses:
         '200':
@@ -608,50 +609,6 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-    # request put for the path /mouvements/{idMouvement}
-    put:
-      summary: Met à jour un mouvement.
-      security:
-        - bearerAuth: []
-      tags:
-        - Mouvements
-      description: Met à jour un mouvement avec les champs idCompte, IdTiers, IdCategorie, idSousCategorie, typeMouvement, montant, dateHeureCreation et dateHeureMAJ.
-      parameters: # parameters for the query
-        - name: idMouvement
-          description: Id du mouvement.
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody: # specification of the request body
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                typeMouvement:
-                  type: string
-                montant:
-                  type: number
-                dateMouvement:
-                  type: string
-      responses:
-        '200':
-          $ref: '#/components/responses/Success'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '406':
-          $ref: '#/components/responses/NotAcceptableError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
     # request patch for the path /mouvements/{idMouvement}
     patch:
       summary: Met à jour partiellement un mouvement.
@@ -674,12 +631,13 @@ paths:
             schema:
               type: object
               properties:
-                typeMouvement:
-                  type: string
-                montant:
-                  type: number
                 dateMouvement:
                   type: string
+                  format: date
+                idCategorie:
+                  type: integer
+                idSousCategorie:
+                  type: integer
       responses:
         '200':
           $ref: '#/components/responses/Success'
