@@ -121,7 +121,7 @@ router.put('/:idCompte', async (req, res) => {
 });
 
 // PATCH /api/comptes/:idCompte - Partially update account
-router.patch('/:idCompte', (req, res) => {
+router.patch('/:idCompte', async (req, res) => {
   const userId = req.userId; // récupération de l'ID utilisateur connecté
   const idCompte = req.params.idCompte; // récupération de l'ID du compte depuis les paramètres de la requête
   try
@@ -134,7 +134,7 @@ router.patch('/:idCompte', (req, res) => {
       return res.status(400).json({ message: 'au minimum, descriptionCompte ou nomBanque doit être defini' });
     }
 
-    const updatedCompte = patchAccount(idCompte, {
+    const updatedCompte = await patchAccount(idCompte, {
       descriptionCompte,
       nomBanque,
       IdUtilisateur: userId,
@@ -246,30 +246,6 @@ router.post('/:idCompte/mouvements', async (req, res) => {
     console.error('Error creating mouvement:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
-});
-
-router.get('/:idCompte/mouvements/:idMouvement', (req, res) => {
-  res.status(200).json({ 
-    message: `Get movement ${req.params.idMouvement} for account ${req.params.idCompte} of user ${req.userId}` 
-  });
-});
-
-router.put('/:idCompte/mouvements/:idMouvement', (req, res) => {
-  res.status(200).json({ 
-    message: `Update movement ${req.params.idMouvement} for account ${req.params.idCompte} of user ${req.userId}` 
-  });
-});
-
-router.patch('/:idCompte/mouvements/:idMouvement', (req, res) => {
-  res.status(200).json({ 
-    message: `Partially update movement ${req.params.idMouvement} for account ${req.params.idCompte} of user ${req.userId}` 
-  });
-});
-
-router.delete('/:idCompte/mouvements/:idMouvement', (req, res) => {
-  res.status(200).json({ 
-    message: `Delete movement ${req.params.idMouvement} for account ${req.params.idCompte} of user ${req.userId}` 
-  });
 });
 
 module.exports = router;
