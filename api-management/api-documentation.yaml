@@ -516,8 +516,6 @@ paths:
                   type: string
                 soldeInitial:
                   type: number
-                dernierSolde:
-                  type: number
       responses:
         '200':
           description: Compte trouvé
