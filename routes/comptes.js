@@ -6,7 +6,9 @@ const {
   getAccountById,
   updateAccount,
   patchAccount,
-  deleteAccount
+  deleteAccount,
+  getMouvementsByUserAndCompte,
+  createMouvement
 
 } = require('../controllers/comptes.js');
 
@@ -174,17 +176,77 @@ router.delete('/:idCompte', (req, res) => {
 
 });
 
-// Compte mouvements routes
-router.get('/:idCompte/mouvements', (req, res) => {
-  res.status(200).json({ 
-    message: `Get all movements for account ${req.params.idCompte} of user ${req.userId}` 
-  });
+// GET /utilisateurs/:idUtilisateur/comptes/:idCompte/mouvements - Liste des mouvements d'un compte pour un utilisateur
+router.get('/:idCompte/mouvements', async (req, res) => {
+  try {
+  const idCompte = req.params.idCompte;
+  
+
+    if ( isNaN(idCompte)) {
+      return res.status(400).json({ message: 'Invalid compte ID' });
+    }
+
+    const mouvements = await getMouvementsByUserAndCompte( idCompte);
+    res.status(200).json(mouvements);
+  } catch (error) {
+    console.error('Error fetching mouvements:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
 });
 
-router.post('/:idCompte/mouvements', (req, res) => {
-  res.status(201).json({ 
-    message: `Create new movement for account ${req.params.idCompte} of user ${req.userId}` 
-  });
+// POST /utilisateurs/:idUtilisateur/comptes/:idCompte/mouvements - Créer un mouvement pour un compte d'un utilisateur
+router.post('/:idCompte/mouvements', async (req, res) => {
+  try {
+
+
+    const {montant, typeMouvement, dateMouvement, idTiers, idCategorie, idSousCategorie, idVirement,idCompte} = req.body;
+    if (montant <= 0) {
+      return res.status(400).json({
+        message: 'Validation error',
+        details: 'montant must be positive'
+      });
+    }
+    if (dateMouvement && new Date(dateMouvement) < new Date()) {
+      return res.status(400).json({
+        message: 'Validation error',
+        details: 'dateMouvement can\'t be in the past'
+      });
+    }
+    // Validation simple
+    const errors = [];
+    if (!typeMouvement) errors.push('typeMouvement is required');
+    if (montant === undefined || montant === null || isNaN(montant)) errors.push('montant is required and must be a number');
+    if (!dateMouvement) errors.push('dateMouvement is required');
+    if (!idTiers) errors.push('idTiers is required');
+    if (!idCategorie) errors.push('idCategorie is required');
+    if (!idSousCategorie) errors.push('idSousCategorie is required');
+    if (idVirement && isNaN(idVirement)) errors.push('idVirement must be a number if provided');
+    if (!idCompte) errors.push('idCompte is required');
+
+    if (errors.length > 0) {
+      return res.status(400).json({ message: 'Validation error', details: errors });
+    }
+
+    const mouvementData = {
+      typeMouvement,
+      montant,
+      dateMouvement,
+      idCompte,
+      idTiers,
+      idCategorie,
+      idSousCategorie,
+      idVirement
+          };
+
+    const newMouvement = await createMouvement(mouvementData);
+    res.status(201).json({
+      message: 'Mouvement created successfully',
+      data: newMouvement
+    });
+  } catch (error) {
+    console.error('Error creating mouvement:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
 });
 
 router.get('/:idCompte/mouvements/:idMouvement', (req, res) => {

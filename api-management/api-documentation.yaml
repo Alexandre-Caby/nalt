@@ -730,15 +730,10 @@ paths:
       tags:
         - Mouvements d'un compte
       description:  Crée un mouvement d'un compte d'utilisateur avec les champs typeMouvement, montant, dateMouvement, idCompte, idTiers, idCategorie et idSousCategorie.
-      parameters: # parameters for the query
-        - name: idCompte
-          description: Id du compte.
-          in: path
-          required: true
-          schema:
-            type: integer
-          content:
-            application/json:
+      requestBody: # specification of the request body
+        required: true
+        content:
+          application/json:
             schema:
               type: object
               properties:
@@ -747,7 +742,8 @@ paths:
                 montant:
                   type: number
                 dateMouvement:
-                  type: date
+                  type: string
+                  format: date
                 idCompte:
                   type: integer
                 idTiers:
@@ -755,6 +751,8 @@ paths:
                 idCategorie:
                   type: integer
                 idSousCategorie:
+                  type: integer
+                idVirement:
                   type: integer
 
       responses:

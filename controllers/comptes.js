@@ -171,11 +171,77 @@ async function deleteAccount(idCompte) {
     }
 }
 
+// Récupérer tous les mouvements d'un utilisateur pour un compte donné
+async function getMouvementsByUserAndCompte(idUtilisateur, idCompte) {
+  try {
+    const [rows] = await db.query(
+      `SELECT * FROM mouvement WHERE idCompte = ?`,
+      [idUtilisateur, idCompte]
+    );
+    return rows;
+  } catch (error) {
+    console.error('Database query error:', error);
+    throw new Error('Database query failed');
+  }
+}
+
+// Créer un mouvement (déjà présent, mais rappel pour cohérence)
+async function createMouvement(mouvementData) {
+  try {
+    const {
+      montant,
+      typeMouvement,
+      dateMouvement,
+      idCompte,
+      idTiers,
+      idCategorie,
+      idSousCategorie,
+      idVirement
+    } = mouvementData;
+
+    // Validation (déjà faite côté route, mais tu peux la renforcer ici)
+    const [result] = await db.query(
+      `INSERT INTO mouvement 
+        (montant, typeMouvement, dateMouvement, idCompte, idTiers, idCategorie, idSousCategorie, idVirement)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [montant, typeMouvement, dateMouvement, idCompte, idTiers, idCategorie, idSousCategorie, idVirement]
+    );
+
+    // Retourne le mouvement créé
+    const newMouvement = await getMouvementById(result.insertId);
+    return newMouvement;
+  } catch (error) {
+    console.error('Database query error:', error);
+    throw new Error('Database query failed');
+  }
+}
+
+// Récupérer un mouvement par son ID (utile pour createMouvement)
+async function getMouvementById(idMouvement) {
+  try {
+    const [rows] = await db.query(
+      `SELECT * FROM mouvement WHERE idMouvement = ?`,
+      [idMouvement]
+    );
+    if (rows.length > 0) {
+      return rows[0];
+    }
+    return null;
+  } catch (error) {
+    console.error('Database query error:', error);
+    throw new Error('Database query failed');
+  }
+}
+
+
 module.exports = {
     getAllAccounts,
     addAccount,
     getAccountById,
     updateAccount,
     patchAccount,
-    deleteAccount
+    deleteAccount,  
+    getMouvementsByUserAndCompte,
+  createMouvement,
+  getMouvementById
 };
