@@ -29,8 +29,34 @@ paths:
                   format: password
 
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
+        '201':
+          description: Authentification réussie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Authentication successful
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  expiresIn:
+                    type: integer
+                    example: 86400
+                  user:
+                    type: object
+                    properties:
+                      login:
+                        type: string
+                        example: test
+                      ville:
+                        type: string
+                        example: Lens
+                      postalCode:
+                        type: string
+                        example: "62300"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '500':
@@ -47,13 +73,9 @@ paths:
       description: Retourne la liste des utilisateurs avec l'id, le nom, le prenom, le login, la ville, le code postal et la date de création
       responses:
         '200':
-          $ref: '#/components/schemas/Success'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
+          $ref: '#/components/responses/Success'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -88,16 +110,36 @@ paths:
                 codePostal: 
                   type: string
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '201':
-          $ref: '#/components/responses/Created'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idUtilisateur:
+                    type: integer
+                    example: 3
+                  login:
+                    type: string
+                    example: test
+                  nomUtilisateur:
+                    type: string
+                    example: est
+                  prenomUtilisateur:
+                    type: string
+                    example: t
+                  ville:
+                    type: string
+                    example: Lens
+                  codePostal:
+                    type: string
+                    example: 62320
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T07:57:20.951Z"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -115,24 +157,14 @@ paths:
         - bearerAuth: []
       tags:
         - Utilisateurs
-      description: Récupère un utilisateur avec l'id, le nom, le prenom, le login, la ville et le code postal.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur
-          in: path
-          required: true
-          schema:
-            type: integer
-            
+      description: Récupère un utilisateur avec l'id, le nom, le prenom, le login, la ville et le code postal.  
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+         '$ref': '#/components/responses/Success'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -167,16 +199,39 @@ paths:
                   type: string
                 codePostal: 
                   type: string
-
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idUtilisateur:
+                    type: integer
+                    example: 3
+                  login:
+                    type: string
+                    example: test
+                  nomUtilisateur:
+                    type: string
+                    example: est
+                  prenomUtilisateur:
+                    type: string
+                    example: t
+                  ville:
+                    type: string
+                    example: Lens
+                  codePostal:
+                    type: string
+                    example: 62320
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T07:57:20.951Z"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -192,21 +247,13 @@ paths:
       tags:
         - Utilisateurs
       description: Met à jour partiellement les informations d'un utilisateur comme le nom, le prenom, le mot de passe, le login, la ville et le code postal.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur
-          in: path
-          required: true
-          schema:
-            type: integer
-
       requestBody: # specification of the request body
         required: false
         content:
           application/json:
             schema:
               type: object
-            properties:
+              properties:
                 nomUtilisateur:
                   type: string
                 prenomUtilisateur:
@@ -220,13 +267,37 @@ paths:
                   type: string
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idUtilisateur:
+                    type: integer
+                    example: 3
+                  login:
+                    type: string
+                    example: test
+                  nomUtilisateur:
+                    type: string
+                    example: est
+                  prenomUtilisateur:
+                    type: string
+                    example: t
+                  ville:
+                    type: string
+                    example: Lens
+                  codePostal:
+                    type: string
+                    example: 62320
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T07:57:20.951Z"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -242,27 +313,13 @@ paths:
       tags:
         - Utilisateurs
       description: Met à jour partiellement les informations d'un utilisateur comme le nom, le prenom, le mot de passe, le login, la ville et le code postal.
-      parameters: # parameters for the query
-        - name: idUtilisateur
-          description: Id de l'utilisateur
-          in: path
-          required: true
-          schema:
-            type: integer
-
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '204':
           $ref: '#/components/responses/NoContent'
-        '303':
-          $ref: '#/components/responses/SeeOther'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -285,12 +342,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Success'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -323,15 +376,31 @@ paths:
                   
       responses:
         '200':
-          $ref: '#/components/responses/Success'
-        '201':
-          $ref: '#/components/responses/Created'
+          description: Compte trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 22
+                  descriptionCompte:
+                    type: string
+                    example: description du compte
+                  nomBanque:
+                    type: string
+                    example: société générale
+                  IdUtilisateur:
+                    type: integer
+                    example: 1
+                  soldeInitial:
+                    type: number
+                    example: 15
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -365,8 +434,6 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -407,13 +474,32 @@ paths:
                   type: number
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Compte trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 22
+                  descriptionCompte:
+                    type: string
+                    example: description du compte
+                  nomBanque:
+                    type: string
+                    example: société générale
+                  IdUtilisateur:
+                    type: integer
+                    example: 1
+                  soldeInitial:
+                    type: number
+                    example: 15
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
+        
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -442,22 +528,39 @@ paths:
           application/json:
             schema:
               type: object
-            properties:
+              properties:
                 descriptionCompte:
                   type: string
                 nomBanque:
                   type: string
-                soldeInitial:
-                  type: number
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Compte trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 22
+                  descriptionCompte:
+                    type: string
+                    example: description du compte
+                  nomBanque:
+                    type: string
+                    example: société générale
+                  IdUtilisateur:
+                    type: integer
+                    example: 1
+                  soldeInitial:
+                    type: number
+                    example: 15
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
+        
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -481,18 +584,12 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '204':
           '$ref': '#/components/responses/NoContent'
-        '303':
-          $ref: '#/components/responses/SeeOther'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -514,12 +611,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Success'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -560,16 +653,55 @@ paths:
                 idVirement:
                   type: integer
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '201':
-          $ref: '#/components/responses/Created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      idMouvement:
+                        type: integer
+                        example: 542
+                      dateMouvement:
+                        type: string
+                        format: date-time
+                        example: "2025-06-20T22:00:00.000Z"
+                      idCompte:
+                        type: integer
+                        example: 1
+                      idTiers:
+                        type: integer
+                        example: 1
+                      idCategorie:
+                        type: integer
+                        example: 1
+                      idSousCategorie:
+                        type: integer
+                        example: 1
+                      idVirement:
+                        type: integer
+                        example: 1
+                      montant:
+                        type: string
+                        example: "10.00"
+                      typeMouvement:
+                        type: string
+                        example: crédit
+                      dateHeureCreation:
+                        type: string
+                        format: date-time
+                        example: "2025-06-20T08:44:07.000Z"
+                      dateHeureMAJ:
+                        type: string
+                        format: date-time
+                        example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -600,8 +732,6 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -640,13 +770,54 @@ paths:
                   type: integer
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      idMouvement:
+                        type: integer
+                        example: 542
+                      dateMouvement:
+                        type: string
+                        format: date-time
+                        example: "2025-06-20T22:00:00.000Z"
+                      idCompte:
+                        type: integer
+                        example: 1
+                      idTiers:
+                        type: integer
+                        example: 1
+                      idCategorie:
+                        type: integer
+                        example: 1
+                      idSousCategorie:
+                        type: integer
+                        example: 1
+                      idVirement:
+                        type: integer
+                        example: 1
+                      montant:
+                        type: string
+                        example: "10.00"
+                      typeMouvement:
+                        type: string
+                        example: crédit
+                      dateHeureCreation:
+                        type: string
+                        format: date-time
+                        example: "2025-06-20T08:44:07.000Z"
+                      dateHeureMAJ:
+                        type: string
+                        format: date-time
+                        example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -670,18 +841,12 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '204':
           '$ref': '#/components/responses/NoContent'
-        '303':
-          $ref: '#/components/responses/SeeOther'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -712,8 +877,6 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -758,16 +921,55 @@ paths:
                   type: integer
 
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '201':
-          $ref: '#/components/responses/Created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      idMouvement:
+                        type: integer
+                        example: 542
+                      dateMouvement:
+                        type: string
+                        format: date-time
+                        example: "2025-06-20T22:00:00.000Z"
+                      idCompte:
+                        type: integer
+                        example: 1
+                      idTiers:
+                        type: integer
+                        example: 1
+                      idCategorie:
+                        type: integer
+                        example: 1
+                      idSousCategorie:
+                        type: integer
+                        example: 1
+                      idVirement:
+                        type: integer
+                        example: 1
+                      montant:
+                        type: string
+                        example: "10.00"
+                      typeMouvement:
+                        type: string
+                        example: crédit
+                      dateHeureCreation:
+                        type: string
+                        format: date-time
+                        example: "2025-06-20T08:44:07.000Z"
+                      dateHeureMAJ:
+                        type: string
+                        format: date-time
+                        example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -789,12 +991,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Success'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -820,16 +1018,32 @@ paths:
                 nomTiers:
                   type: string
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '201':
-          $ref: '#/components/responses/Created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 29
+                  nomTiers:
+                    type: string
+                    example: nawel
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:10:27.795Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:10:27.795Z"
+                  idUtilisateur:
+                    type:
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -863,8 +1077,6 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -898,13 +1110,32 @@ paths:
                   type: string
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Tiers trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 29
+                  nomTiers:
+                    type: string
+                    example: nawel
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:10:27.795Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:10:27.795Z"
+                  idUtilisateur:
+                    type:
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -928,18 +1159,12 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '204':
           '$ref': '#/components/responses/NoContent'
-        '303':
-          $ref: '#/components/responses/SeeOther'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -961,12 +1186,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Success'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1002,16 +1223,41 @@ paths:
                   type: string
                   format: date
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '201':
-          $ref: '#/components/responses/Created'
+          description: Virement trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 101
+                  idCompteDebit:
+                    type: integer
+                    example: 1
+                  idCompteCredit:
+                    type: integer
+                    example: 1
+                  montant:
+                    type: number
+                    example: 10
+                  dateVirement:
+                    type: string
+                    format: date
+                    example: "2025-06-21"
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:15:02.154Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1043,8 +1289,6 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1081,13 +1325,40 @@ paths:
                   format: date
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Virement trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 101
+                  idCompteDebit:
+                    type: integer
+                    example: 1
+                  idCompteCredit:
+                    type: integer
+                    example: 1
+                  montant:
+                    type: number
+                    example: 10
+                  dateVirement:
+                    type: string
+                    format: date
+                    example: "2025-06-21"
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:15:02.154Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1111,18 +1382,12 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '204':
           $ref: '#/components/responses/NoContent'
-        '303':
-          $ref: '#/components/responses/SeeOther'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1135,14 +1400,6 @@ paths:
   /categories:
     get:
       summary: Retourne une liste de catégories.
-      parameters:
-        - name: idCategorie
-          description: Identifiant de la catégorie.
-          in: query
-          required: false
-          schema:
-            type: integer
-
       security:
         - bearerAuth: [ ]
       tags:
@@ -1151,12 +1408,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Success'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1182,16 +1435,30 @@ paths:
                 nomCategorie:
                   type: string
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '201':
-          $ref: '#/components/responses/Created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idCategorie:
+                    type: integer
+                    example: 17
+                  nomCategorie:
+                    type: string
+                    example: nom de la catégorie
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:17:07.000Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1221,8 +1488,6 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1256,13 +1521,29 @@ paths:
                   type: string
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idCategorie:
+                    type: integer
+                    example: 17
+                  nomCategorie:
+                    type: string
+                    example: nom de la catégorie
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:17:07.000Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1285,18 +1566,12 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '204':
           '$ref': '#/components/responses/NoContent'
-        '303':
-          $ref: '#/components/responses/SeeOther'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1326,15 +1601,12 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
           $ref: '#/components/responses/NotAcceptableError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
 
     post:
       summary: Crée une nouvelle sous-catégorie.
@@ -1363,16 +1635,70 @@ paths:
                 idCategorie:
                   type: integer
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '201':
-          $ref: '#/components/responses/Created'
+          description: Sous-catégorie trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idSousCategorie:
+                    type: integer
+                    example: 49
+                  nomSousCategorie:
+                    type: string
+                    example: nom de la sous categorie
+                  idCategorie:
+                    type: integer
+                    example: 1
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:21:00.000Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '406':
+          $ref: '#/components/responses/NotAcceptableError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  ###################################################################################
+  /categories/{idCategorie}/sous-categories/{idSousCategorie}:
+    get:
+      summary: Retourne une liste de sous-catégories.
+      parameters:
+        - name: idCategorie
+          description: Identifiant de la catégorie.
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: idSousCategorie
+          description: Identifiant de la sous catégorie.
+          in: path
+          required: true
+          schema:
+            type: integer
+      
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Sous-categories
+      description: Retourne une sous-catégories avec les champs idSousCategorie, nomSousCategorie, idCategorie, dateHeureCreation et dateHeureMAJ.
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1380,8 +1706,6 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-
-  /categories/{idCategorie}/sous-categories/{idSousCategorie}:
     put:
       summary: Met à jour une sous-catégorie.
       security:
@@ -1414,21 +1738,39 @@ paths:
                   type: string
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Sous-catégorie trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idSousCategorie:
+                    type: integer
+                    example: 49
+                  nomSousCategorie:
+                    type: string
+                    example: nom de la sous categorie
+                  idCategorie:
+                    type: integer
+                    example: 1
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:21:00.000Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:21:00.000Z"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
           $ref: '#/components/responses/NotAcceptableError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
-
     delete:
       summary: Supprime une sous-catégorie.
       security:
@@ -1451,18 +1793,12 @@ paths:
             type: integer
 
       responses:
-        '200':
-          $ref: '#/components/responses/Success'
         '204':
           '$ref': '#/components/responses/NoContent'
-        '303':
-          $ref: '#/components/responses/SeeOther'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '406':
@@ -1487,14 +1823,24 @@ components:
       description: Error response
       type: object
       properties:
-        code:
-          type: string
         message:
+          type: string
+        details:
           type: string
     
     # schema for the success responses
     Success:
-      type: object
+      type: arr
+      properties:
+        message:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+
+       # schema for the success responses
+    NoContent:
+      type: arr
       properties:
         message:
           type: string
@@ -1506,25 +1852,24 @@ components:
   responses:
    # 200 Success
     Success:
-      description: Success
+      description:  Succès, retourne un tableau
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Success'
-    # 201 Created
-    Created:
-      description: Created
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Success'
+            type: array
+            example: [ ... ]
+            items: {}
+            '$ref': '#/components/responses/Success'
     # 204 No Content
     NoContent:
-      description: No Content
+      description: Opération réussie, contenu vide
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Success'
+            type: array
+            example: []
+            items: {}
+            '$ref': '#/components/responses/NoContent'
     # 303 See Other
     SeeOther:
       description: See Other
