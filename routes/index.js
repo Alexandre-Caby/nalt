@@ -20,7 +20,6 @@ router.use(cors({
 const authRouter = require('./auth');
 const usersRouter = require('./utilisateurs.js');
 const categoriesRouter = require('./categories');
-const vuesRouter = require('./vues');
 const comptesRouter = require('./comptes');
 const tiersRouter = require('./tiers');
 const mouvementsRouter = require('./mouvements');
@@ -39,8 +38,6 @@ router.use('/tiers', authenticateToken, tiersRouter);
 router.use('/mouvements', authenticateToken, mouvementsRouter);
 router.use('/virements', authenticateToken, virementsRouter);
 router.use('/categories', authenticateToken, categoriesRouter);
-router.use('/v_categories', authenticateToken, vuesRouter.categories);
-router.use('/v_mouvements', authenticateToken, vuesRouter.mouvements);
 
 // Home route
 router.get('/', function(req, res) {
