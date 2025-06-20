@@ -181,7 +181,7 @@ router.get('/:idCompte/mouvements', async (req, res) => {
   const idCompte = req.params.idCompte;
   
 
-    if ( isNaN(idCompte)) {
+    if (isNaN(idCompte)) {
       return res.status(400).json({ message: 'Invalid compte ID' });
     }
 
@@ -205,7 +205,10 @@ router.post('/:idCompte/mouvements', async (req, res) => {
         details: 'montant must be positive'
       });
     }
-    if (dateMouvement && new Date(dateMouvement) < new Date()) {
+    const date = new Date(); // maintenant
+    date.setHours(0, 0, 0, 0); // aujourd'hui à 00:00:00
+
+    if (dateMouvement && new Date(dateMouvement) < date) {
       return res.status(400).json({
         message: 'Validation error',
         details: 'dateMouvement can\'t be in the past'
@@ -238,10 +241,7 @@ router.post('/:idCompte/mouvements', async (req, res) => {
           };
 
     const newMouvement = await createMouvement(mouvementData);
-    res.status(201).json({
-      message: 'Mouvement created successfully',
-      data: newMouvement
-    });
+    res.status(201).json(newMouvement);
   } catch (error) {
     console.error('Error creating mouvement:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
