@@ -136,6 +136,7 @@ Once connedted, the token is set to expire in 24 hours. You can use the `/authen
 #### Subcategories
 - `GET /categories/:id/sous-categories` - Get subcategories
 - `POST /categories/:id/sous-categories` - Create subcategory
+- `GET /categories/:id/sous-categories/:subId` - Get subcategory by ID
 - `PUT /categories/:id/sous-categories/:subId` - Update subcategory
 - `DELETE /categories/:id/sous-categories/:subId` - Delete subcategory
 
@@ -205,7 +206,7 @@ curl -X POST http://localhost:3000/api/categories \
 
 ## Technologies Used
 
-- **Backend Framework**: Express.js
+- **Backend Framework**: Express.js / Node.js
 - **Database**: MySQL
 - **Authentication**: JWT (JSON Web Tokens)
 - **Password Hashing**: bcrypt
@@ -228,4 +229,4 @@ For questions or support, please contact the development team NALT.
 
 ---
 
-**Note**: Make sure to configure your database connection and environment variables before running the
+**Note**: Make sure to configure your database connection and environment variables before running the application. Refer to the `bdd_config.js` file for database connection settings.
