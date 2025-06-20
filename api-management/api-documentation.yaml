@@ -160,7 +160,33 @@ paths:
       description: Récupère un utilisateur avec l'id, le nom, le prenom, le login, la ville et le code postal.  
       responses:
         '200':
-         '$ref': '#/components/responses/Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idUtilisateur:
+                    type: integer
+                    example: 3
+                  login:
+                    type: string
+                    example: test
+                  nomUtilisateur:
+                    type: string
+                    example: est
+                  prenomUtilisateur:
+                    type: string
+                    example: t
+                  ville:
+                    type: string
+                    example: Lens
+                  codePostal:
+                    type: string
+                    example: 62320
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T07:57:20.951Z"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -375,7 +401,7 @@ paths:
                   type: number
                   
       responses:
-        '200':
+        '201':
           description: Compte trouvé
           content:
             application/json:
@@ -429,7 +455,27 @@ paths:
       description: Récupère l'ensemble des informations sur le compte d'un utilisateur (idCompte, descriptionCompte, nomBanque, idUtilisateur, dateHeureCreation,dateHeureMAJ,soldeInitial et dernierSolde).
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Compte trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 22
+                  descriptionCompte:
+                    type: string
+                    example: description du compte
+                  nomBanque:
+                    type: string
+                    example: société générale
+                  IdUtilisateur:
+                    type: integer
+                    example: 1
+                  soldeInitial:
+                    type: number
+                    example: 15
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -659,45 +705,42 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
-                    type: object
-                    properties:
-                      idMouvement:
-                        type: integer
-                        example: 542
-                      dateMouvement:
-                        type: string
-                        format: date-time
-                        example: "2025-06-20T22:00:00.000Z"
-                      idCompte:
-                        type: integer
-                        example: 1
-                      idTiers:
-                        type: integer
-                        example: 1
-                      idCategorie:
-                        type: integer
-                        example: 1
-                      idSousCategorie:
-                        type: integer
-                        example: 1
-                      idVirement:
-                        type: integer
-                        example: 1
-                      montant:
-                        type: string
-                        example: "10.00"
-                      typeMouvement:
-                        type: string
-                        example: crédit
-                      dateHeureCreation:
-                        type: string
-                        format: date-time
-                        example: "2025-06-20T08:44:07.000Z"
-                      dateHeureMAJ:
-                        type: string
-                        format: date-time
-                        example: "2025-06-21"
+                  idMouvement:
+                    type: integer
+                    example: 542
+                  dateMouvement:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T22:00:00.000Z"
+                  idCompte:
+                    type: integer
+                    example: 1
+                  idTiers:
+                    type: integer
+                    example: 1
+                  idCategorie:
+                    type: integer
+                    example: 1
+                  idSousCategorie:
+                    type: integer
+                    example: 1
+                  idVirement:
+                    type: integer
+                    example: 1
+                  montant:
+                    type: string
+                    example: "10.00"
+                  typeMouvement:
+                    type: string
+                    example: crédit
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T08:44:07.000Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -727,7 +770,47 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idMouvement:
+                    type: integer
+                    example: 542
+                  dateMouvement:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T22:00:00.000Z"
+                  idCompte:
+                    type: integer
+                    example: 1
+                  idTiers:
+                    type: integer
+                    example: 1
+                  idCategorie:
+                    type: integer
+                    example: 1
+                  idSousCategorie:
+                    type: integer
+                    example: 1
+                  idVirement:
+                    type: integer
+                    example: 1
+                  montant:
+                    type: string
+                    example: "10.00"
+                  typeMouvement:
+                    type: string
+                    example: crédit
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T08:44:07.000Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -775,45 +858,42 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
-                    type: object
-                    properties:
-                      idMouvement:
-                        type: integer
-                        example: 542
-                      dateMouvement:
-                        type: string
-                        format: date-time
-                        example: "2025-06-20T22:00:00.000Z"
-                      idCompte:
-                        type: integer
-                        example: 1
-                      idTiers:
-                        type: integer
-                        example: 1
-                      idCategorie:
-                        type: integer
-                        example: 1
-                      idSousCategorie:
-                        type: integer
-                        example: 1
-                      idVirement:
-                        type: integer
-                        example: 1
-                      montant:
-                        type: string
-                        example: "10.00"
-                      typeMouvement:
-                        type: string
-                        example: crédit
-                      dateHeureCreation:
-                        type: string
-                        format: date-time
-                        example: "2025-06-20T08:44:07.000Z"
-                      dateHeureMAJ:
-                        type: string
-                        format: date-time
-                        example: "2025-06-21"
+                  idMouvement:
+                    type: integer
+                    example: 542
+                  dateMouvement:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T22:00:00.000Z"
+                  idCompte:
+                    type: integer
+                    example: 1
+                  idTiers:
+                    type: integer
+                    example: 1
+                  idCategorie:
+                    type: integer
+                    example: 1
+                  idSousCategorie:
+                    type: integer
+                    example: 1
+                  idVirement:
+                    type: integer
+                    example: 1
+                  montant:
+                    type: string
+                    example: "10.00"
+                  typeMouvement:
+                    type: string
+                    example: crédit
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T08:44:07.000Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -925,45 +1005,42 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
-                    type: object
-                    properties:
-                      idMouvement:
-                        type: integer
-                        example: 542
-                      dateMouvement:
-                        type: string
-                        format: date-time
-                        example: "2025-06-20T22:00:00.000Z"
-                      idCompte:
-                        type: integer
-                        example: 1
-                      idTiers:
-                        type: integer
-                        example: 1
-                      idCategorie:
-                        type: integer
-                        example: 1
-                      idSousCategorie:
-                        type: integer
-                        example: 1
-                      idVirement:
-                        type: integer
-                        example: 1
-                      montant:
-                        type: string
-                        example: "10.00"
-                      typeMouvement:
-                        type: string
-                        example: crédit
-                      dateHeureCreation:
-                        type: string
-                        format: date-time
-                        example: "2025-06-20T08:44:07.000Z"
-                      dateHeureMAJ:
-                        type: string
-                        format: date-time
-                        example: "2025-06-21"
+                  idMouvement:
+                    type: integer
+                    example: 542
+                  dateMouvement:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T22:00:00.000Z"
+                  idCompte:
+                    type: integer
+                    example: 1
+                  idTiers:
+                    type: integer
+                    example: 1
+                  idCategorie:
+                    type: integer
+                    example: 1
+                  idSousCategorie:
+                    type: integer
+                    example: 1
+                  idVirement:
+                    type: integer
+                    example: 1
+                  montant:
+                    type: string
+                    example: "10.00"
+                  typeMouvement:
+                    type: string
+                    example: crédit
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T08:44:07.000Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -1070,7 +1147,27 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 29
+                    nomTiers:
+                      type: string
+                      example: nawel
+                    dateHeureCreation:
+                      type: string
+                      format: date-time
+                      example: "2025-06-20T09:10:27.795Z"
+                    dateHeureMAJ:
+                      type: string
+                      format: date-time
+                      example: "2025-06-20T09:10:27.795Z"
+                    idUtilisateur:
+                      type:
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -1222,7 +1319,6 @@ paths:
                   format: date
       responses:
         '201':
-          description: Virement trouvé
           content:
             application/json:
               schema:
@@ -1282,7 +1378,35 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 101
+                  idCompteDebit:
+                    type: integer
+                    example: 1
+                  idCompteCredit:
+                    type: integer
+                    example: 1
+                  montant:
+                    type: number
+                    example: 10
+                  dateVirement:
+                    type: string
+                    format: date
+                    example: "2025-06-21"
+                  dateHeureCreation:
+                    type: string
+                    format: date-time
+                    example: "2025-06-20T09:15:02.154Z"
+                  dateHeureMAJ:
+                    type: string
+                    format: date-time
+                    example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -1323,7 +1447,6 @@ paths:
                   format: date
       responses:
         '200':
-          description: Virement trouvé
           content:
             application/json:
               schema:
@@ -1481,7 +1604,25 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    idCategorie:
+                      type: integer
+                      example: 17
+                    nomCategorie:
+                      type: string
+                      example: nom de la catégorie
+                    dateHeureCreation:
+                      type: string
+                      format: date-time
+                      example: "2025-06-20T09:17:07.000Z"
+                    dateHeureMAJ:
+                      type: string
+                      format: date-time
+                      example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -1630,11 +1771,8 @@ paths:
               properties:
                 nomSousCategorie:
                   type: string
-                idCategorie:
-                  type: integer
       responses:
         '201':
-          description: Sous-catégorie trouvée
           content:
             application/json:
               schema:
@@ -1692,7 +1830,28 @@ paths:
       description: Retourne une sous-catégories avec les champs idSousCategorie, nomSousCategorie, idCategorie, dateHeureCreation et dateHeureMAJ.
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    idSousCategorie:
+                      type: integer
+                      example: 49
+                    nomSousCategorie:
+                      type: string
+                      example: nom de la sous categorie
+                    idCategorie:
+                      type: integer
+                      example: 1
+                    dateHeureCreation:
+                      type: string
+                      format: date-time
+                      example: "2025-06-20T09:21:00.000Z"
+                    dateHeureMAJ:
+                      type: string
+                      format: date-time
+                      example: "2025-06-21"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -1736,7 +1895,6 @@ paths:
                   type: string
       responses:
         '200':
-          description: Sous-catégorie trouvée
           content:
             application/json:
               schema:
