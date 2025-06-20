@@ -116,6 +116,14 @@ paths:
       tags:
         - Utilisateurs
       description: Récupère un utilisateur avec l'id, le nom, le prenom, le login, la ville et le code postal.
+      parameters: # parameters for the query
+        - name: idUtilisateur
+          description: Id de l'utilisateur
+          in: path
+          required: true
+          schema:
+            type: integer
+            
       responses:
         '200':
           $ref: '#/components/responses/Success'
